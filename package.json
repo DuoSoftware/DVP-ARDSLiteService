@@ -1,25 +1,26 @@
 {
-  "name": "ArdsNode",
+  "name": "DVP-ARDSLiteService",
   "version": "1.0.0",
-  "description": "ArdsLite Service",
-  "main": "ContinueArdsProcess.js",
+  "description": "",
+  "main": "app.js",
   "dependencies": {
-    "DVP-Common": "git+https://github.com/DuoSoftware/DVP-Common",
-    "DVP-ARDSCommon": "git+https://github.com/DuoSoftware/DVP-ARDSCommon",
+    "ArdsCommon": "^1.0.0",
+    "config": "^1.15.0",
+    "DVP-Common": "^0.0.0",
     "node-uuid": "^1.4.3",
-    "request": "^2.55.0",
-    "restify": "^3.0.2"
+    "request": "^2.60.0",
+    "restify": "^3.0.3"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Heshan.i",
-  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/DuoSoftware/DVP-ARDSLiteService.git"
   },
+  "author": "Heshan.i",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/DuoSoftware/DVP-ARDSLiteService/issues"
   },
