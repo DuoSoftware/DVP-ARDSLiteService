@@ -1,7 +1,7 @@
 ﻿module.exports = {
 	"Redis":{
-		"redisip":"REDIS_IP",
-		"redisdb":"REDIS_DB"
+		"redisip":"SYS_REDIS_HOST",
+		"redisdb":"SYS_REDIS_DB"
 	},
 	"Services" : {
 		"resourceSelectionUrl": "SYS_SERVICE_RS"
