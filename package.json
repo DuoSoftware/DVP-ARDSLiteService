@@ -1,0 +1,19 @@
+{
+  "name": "ArdsNode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ContinueArdsProcess.js",
+  "dependencies": {
+    "DVP-Common": "DuoSoftware/DVP-Common",
+    "DVP-ARDSCommon": "DuoSoftware/DVP-ARDSCommon",
+    "node-uuid": "^1.4.3",
+    "request": "^2.55.0",
+    "restify": "^3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
