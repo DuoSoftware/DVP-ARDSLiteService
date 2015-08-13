@@ -7,8 +7,8 @@
 		"resourceSelectionUrl": "SYS_SERVICE_RS"
 	},
 	"Host": {
-	    "Port": "HOST_ARDSSERVICE_PORT",
-	    "Version": "HOST_VERSION"
+		"Port": "HOST_ARDSSERVICE_PORT",
+		"Version": "HOST_VERSION"
 	},
 	"DB": {
 	    "Type": "SYS_DATABASE_TYPE",
