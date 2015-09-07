@@ -12,6 +12,9 @@ module.exports = function(sequelize, DataTypes) {
             DialoutTime:DataTypes.DATE,
             CallBackCount:DataTypes.INTEGER,
             CallbackStatus:DataTypes.BOOLEAN,
+            Class: DataTypes.STRING,
+            Type: DataTypes.STRING,
+            Category: DataTypes.STRING,
             CallBackId:{type:DataTypes.INTEGER, primaryKey:true,autoIncrement: true}
 
         }

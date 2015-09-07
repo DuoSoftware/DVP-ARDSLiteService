@@ -130,7 +130,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/requestservers/:class/:type/:categ
             infoLogger.ReqResLogger.log('info', '%s Start- requestserver/searchbytag #', logkey, { request: req.params });
             
             var data = req.params;
-            var tags = ["company_" + company, "tenant_" + tenant, "class_" + data["class"], "type_" + data["type"], "category_" + data["category"]];
+            var tags = ["company_*", "tenant_*", "class_" + data["class"], "type_" + data["type"], "category_" + data["category"]];
             reqServerHandler.SearchReqServerByTags(logkey, tags, function (err, result) {
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestserver/searchbytag :: Error: %s #', logkey, err, { request: req.params });
@@ -668,13 +668,13 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/concurrencysl
             req.body.Company = parseInt(company);
             req.body.Tenant = parseInt(tenant);
             
-            var objkey = util.format('%d:%d:Session::%s:res::%s', req.body.Company, req.body.Tenant, req.body.SessionId, req.params["resourceid"]);
+            var objkey = util.format('%d:%d:Session::%s:res::%s', req.body.Company, req.body.Tenant, req.params["sessionid"], req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- resource/cs/updatebysessionid #', logkey, { request: req.body });
             
-            resourceHandler.UpdateSlotStateBySessionId(logkey, req.body.Company, req.body.Tenant, req.body.ReqClass, req.body.ReqType, req.body.ReqCategory, req.params["resourceid"], req.body.SessionId, req.body.State, req.body.OtherInfo, function (err, result) {
+            resourceHandler.UpdateSlotStateBySessionId(logkey, req.body.Company, req.body.Tenant, req.body.ReqClass, req.body.ReqType, req.body.ReqCategory, req.params["resourceid"], req.params["sessionid"], req.body.State, req.body.OtherInfo, function (err, result) {
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', 'End- resource/cs/updatebysessionid :: Error: %s #', err, { request: req.body });
                     
@@ -727,6 +727,73 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/state/:state'
                     res.end(jsonString);
                 }
             });
+        });
+    } catch (ex2) {
+        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonString);
+    }
+    return next();
+});
+
+server.put('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourceid/state/:state', function (req, res, next) {
+    try {
+            req.body.Company = parseInt(req.params["company"]);
+            req.body.Tenant = parseInt(req.params["tenant"]);
+
+            var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
+            var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+
+            infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+            infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, { request: req.params });
+            var tags = req.body.Tags;
+            resStateMapper.SetResourceState(logkey, req.body.Company, req.body.Tenant, req.params["resourceid"], req.params["state"], function (err, result) {
+                if (err != null) {
+                    infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, { request: req.body });
+
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                    res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(jsonString);
+                }
+                else {
+                    infoLogger.ReqResLogger.log('info', '%s End- resource/state/push :: Result: %j #', logkey, result, { request: req.body });
+
+                    var jsonString = messageFormatter.FormatMessage(err, "update resource state success", true, result);
+                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(jsonString);
+                }
+            });
+    } catch (ex2) {
+        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonString);
+    }
+    return next();
+});
+
+server.get('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourceid/state', function (req, res, next) {
+    try {
+        var objkey = util.format('Resource:%d:%d:%s', req.params["company"], req.params["tenant"], req.params["resourceid"]);
+        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+
+        infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+        infoLogger.ReqResLogger.log('info', '%s Start- resource/state/get #', logkey, { request: req.params });
+        var tags = req.body.Tags;
+        resourceHandler.GetResourceState(logkey, req.params["company"], req.params["tenant"], req.params["resourceid"], function (err, result) {
+            if (err != null) {
+                infoLogger.ReqResLogger.log('error', '%s End- resource/state/get :: Error: %s #', logkey, err, { request: req.body });
+
+                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(jsonString);
+            }
+            else {
+                infoLogger.ReqResLogger.log('info', '%s End- resource/state/get :: Result: %j #', logkey, result, { request: req.body });
+
+                var jsonString = messageFormatter.FormatMessage(err, "get resource state success", true, result);
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(jsonString);
+            }
         });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);

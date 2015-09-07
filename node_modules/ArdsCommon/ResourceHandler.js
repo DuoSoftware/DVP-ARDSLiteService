@@ -199,6 +199,16 @@ var GetResource = function (logKey, company, tenant, resourceId, callback) {
     });
 };
 
+var GetResourceState = function (logKey, company, tenant, resourceId, callback) {
+    infoLogger.DetailLogger.log('info', '%s ************************* Start GetResourceState *************************', logKey);
+
+    var key = util.format('ResourceState:%s:%s:%s', company, tenant, resourceId);
+    redisHandler.GetObj(logKey, key, function (err, result) {
+        infoLogger.DetailLogger.log('info', '%s Finished GetResourceState. Result: %s', logKey, result);
+        callback(err, result);
+    });
+};
+
 var SearchResourcebyTags = function (logKey, tags, callback) {
     infoLogger.DetailLogger.log('info', '%s ************************* Start SearchResourcebyTags *************************', logKey);
 
@@ -435,6 +445,7 @@ module.exports.AddResource = AddResource;
 module.exports.SetResource = SetResource;
 module.exports.RemoveResource = RemoveResource;
 module.exports.GetResource = GetResource;
+module.exports.GetResourceState = GetResourceState;
 module.exports.SearchResourcebyTags = SearchResourcebyTags;
 
 module.exports.UpdateLastConnectedTime = UpdateLastConnectedTime;
