@@ -51,7 +51,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 }
                 
                 var hrOtherData = JSON.parse(handlingResource);
-                var postDataString = { SessionID: request.SessionId, ResourceInfo: hrOtherData };
+                var postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
                 
                 
                 if (Array.isArray(hrOtherData)) {
@@ -61,7 +61,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         var resDataObj = JSON.parse(resData);
                         resInfoData.push(resDataObj);
                     }
-                    postDataString = { SessionID: request.SessionId, ResourceInfo: resInfoData };
+                    postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: resInfoData };
                 }
 
                 reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, postDataString, function (result, msg) {
@@ -106,7 +106,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             console.log(result);
 
             var hrOtherData = JSON.parse(handlingResource);
-            var postDataString = { SessionID: request.SessionId, ResourceInfo: hrOtherData };
+            var postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
             
             
             if (Array.isArray(hrOtherData)) {
@@ -116,7 +116,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     var resDataObj = JSON.parse(resData);
                     resInfoData.push(resDataObj);
                 }
-                postDataString = { SessionID: request.SessionId, ResourceInfo: resInfoData };
+                postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: resInfoData };
             }
             callback(postDataString);
             break;
