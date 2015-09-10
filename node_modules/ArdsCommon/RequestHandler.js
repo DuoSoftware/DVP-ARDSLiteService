@@ -3,7 +3,6 @@ var redisHandler = require('./RedisHandler.js');
 var sortArray = require('./SortArray.js');
 var reqQueueHandler = require('./ReqQueueHandler.js');
 var resourceHandler = require('./ResourceHandler.js');
-var preProcessHandler = require('./PreProcessor.js');
 var infoLogger = require('./InformationLogger.js');
 
 var AddRequest = function (logKey, requestObj, callback) {
@@ -22,6 +21,10 @@ var AddRequest = function (logKey, requestObj, callback) {
     var sortedAttributes = sortArray.sortData(tempAttributeList);
     for (var k in sortedAttributes) {
         tag.push("attribute_" + sortedAttributes[k]);
+    }
+
+    if (requestObj.ResourceCount == null){
+        requestObj.ResourceCount = 1;
     }
     
     var jsonObj = JSON.stringify(requestObj);
@@ -57,6 +60,10 @@ var SetRequest = function (logKey, requestObj, cVid, callback) {
             var sortedAttributes = sortArray.sortData(tempAttributeList);
             for (var k in sortedAttributes) {
                 tag.push("attribute_" + sortedAttributes[k]);
+            }
+
+            if (requestObj.ResourceCount == null){
+                requestObj.ResourceCount = 1;
             }
             var jsonObj = JSON.stringify(requestObj);
             
@@ -136,7 +143,7 @@ var RejectRequest = function (logKey, company, tenant, sessionId, reason, callba
                 else {
                     if (result.length == 1) {
                         var csObj = result[0];
-                        resourceHandler.UpdateSlotStateAvailable(logKey, company, tenant, csObj.Class, csObj.Type, csObj.Category, csObj.ResourceId, csObj.SlotId, "Reject", function (err, reply) {
+                        resourceHandler.UpdateSlotStateAvailable(logKey, company, tenant, csObj.Category, csObj.ResourceId, csObj.SlotId, "Reject", function (err, reply) {
                             if (err) {
                                 console.log(err);
                             }

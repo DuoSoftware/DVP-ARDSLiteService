@@ -8,8 +8,8 @@ var infoLogger = require('./InformationLogger.js');
 var AddRequestServer = function (logKey, reqServerObj, callback) {
     infoLogger.DetailLogger.log('info', '%s ************************* Start AddRequestServer *************************', logKey);
 
-    var key = util.format('ReqServer:%d:%d:%s', reqServerObj.Company, reqServerObj.Tenant, reqServerObj.ServerID);
-    var tag = ["company_" + reqServerObj.Company, "tenant_" + reqServerObj.Tenant, "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
+    var key = util.format('ReqServer:%s:%s:%s', "*", "*", reqServerObj.ServerID);
+    var tag = ["company_*", "tenant_*", "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
     
     var obj = JSON.stringify(reqServerObj);
     
@@ -22,8 +22,8 @@ var AddRequestServer = function (logKey, reqServerObj, callback) {
 var SetRequestServer = function (logKey, reqServerObj, callback) {
     infoLogger.DetailLogger.log('info', '%s ************************* Start SetRequestServer *************************', logKey);
 
-    var key = util.format('ReqServer:%d:%d:%d', reqServerObj.Company, reqServerObj.Tenant, reqServerObj.ServerID);
-    var tag = ["company_" + reqServerObj.Company, "tenant_" + reqServerObj.Tenant, "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
+    var key = util.format('ReqServer:%s:%s:%s', "*", "*", reqServerObj.ServerID);
+    var tag = ["company_*", "tenant_*", "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
     
     var obj = JSON.stringify(reqServerObj);
     
@@ -36,7 +36,7 @@ var SetRequestServer = function (logKey, reqServerObj, callback) {
 var GetRequestServer = function (logKey, company, tenant, serverId, callback) {
     infoLogger.DetailLogger.log('info', '%s ************************* Start GetRequestServer *************************', logKey);
 
-    var key = util.format('ReqServer:%s:%s:%s', company, tenant, serverId);
+    var key = util.format('ReqServer:%s:%s:%s', "*", "*", serverId);
     redisHandler.GetObj(logKey, key, function (err, result) {
         infoLogger.DetailLogger.log('info', '%s Finished GetRequestServer. Result: %s', logKey, result);
         callback(err, result);
@@ -64,7 +64,7 @@ var SearchReqServerByTags = function (logKey, tags, callback) {
 var RemoveRequestServer = function (logKey, company, tenant, serverId, callback) {
     infoLogger.DetailLogger.log('info', '%s ************************* Start RemoveRequestServer *************************', logKey);
 
-    var key = util.format('ReqServer:%s:%s:%s', company, tenant, serverId);
+    var key = util.format('ReqServer:%s:%s:%s', "*", "*", serverId);
     
     redisHandler.GetObj(logKey, key, function (err, obj) {
         if (err) {
@@ -78,7 +78,7 @@ var RemoveRequestServer = function (logKey, company, tenant, serverId, callback)
                 callback(err, res);
             }
             else {
-                var tag = ["company_" + reqServerObj.Company, "tenant_" + reqServerObj.Tenant, "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
+                var tag = ["company_*", "tenant_*", "class_" + reqServerObj.Class, "type_" + reqServerObj.Type, "category_" + reqServerObj.Category, "objtype_ReqServer", "serverid_" + reqServerObj.ServerID];
                 
                 redisHandler.RemoveObj_T(logKey, key, tag, function (err, result) {
                     infoLogger.DetailLogger.log('info', '%s Finished RemoveRequestServer. Result: %s', logKey, result);

@@ -79,6 +79,7 @@ var models = [
     "CampContactSchedule",
     "CampCallbackConfigurations",
     "CampCallBackReasons",
+    "CampAdditionalData",
     "Endpoint",
     "ArdsAttributeinfo",
     "ArdsAttributeMetadata",
@@ -303,6 +304,11 @@ models.forEach(function(model) {
     m.CampCallbackConfigurations.belongsTo(m.CampCallBackReasons, {as:"CampCallBackReasons", foreignKey:"ReasonId"});
     m.CampCallBackReasons.hasMany(m.CampCallbackConfigurations, {as:"CampCallbackConfigurations", foreignKey:"ReasonId"});
     //------------------CampCallbackConfigurations
+
+        //------------------CampCallbackConfigurations
+        m.CampAdditionalData.belongsTo(m.CampCampaignInfo, {as:"CampCampaignInfo", foreignKey:"CampaignId"});
+        m.CampCampaignInfo.hasMany(m.CampAdditionalData, {as:"CampAdditionalData", foreignKey:"CampaignId"});
+        //------------------CampCallbackConfigurations
 
     // ----------------------- [CampaignManager] ----------------------- //
 

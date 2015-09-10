@@ -2,7 +2,6 @@
 var redisHandler = require('ArdsCommon/RedisHandler.js')
 var sortArray = require('ArdsCommon/SortArray.js');
 var reqQueueHandler = require('ArdsCommon/ReqQueueHandler.js');
-var resourceHandler = require('ArdsCommon/ResourceHandler.js');
 var preProcessHandler = require('ArdsCommon/PreProcessor.js');
 var contArdsHandler = require('./ContinueArdsProcess.js');
 var infoLogger = require('ArdsCommon/InformationLogger.js');
