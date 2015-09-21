@@ -1,11 +1,11 @@
 ﻿var util = require('util');
-var redisHandler = require('ArdsCommon/RedisHandler.js')
-var sortArray = require('ArdsCommon/SortArray.js');
-var reqQueueHandler = require('ArdsCommon/ReqQueueHandler.js');
-var preProcessHandler = require('ArdsCommon/PreProcessor.js');
+var redisHandler = require('DVP-ARDSCommon/RedisHandler.js')
+var sortArray = require('DVP-ARDSCommon/SortArray.js');
+var reqQueueHandler = require('DVP-ARDSCommon/ReqQueueHandler.js');
+var preProcessHandler = require('DVP-ARDSCommon/PreProcessor.js');
 var contArdsHandler = require('./ContinueArdsProcess.js');
-var infoLogger = require('ArdsCommon/InformationLogger.js');
-var requestHandler = require('ArdsCommon/RequestHandler.js');
+var infoLogger = require('DVP-ARDSCommon/InformationLogger.js');
+var requestHandler = require('DVP-ARDSCommon/RequestHandler.js');
 
 var AddRequest = function (logKey, reqPreObj, callback) {
     try {
