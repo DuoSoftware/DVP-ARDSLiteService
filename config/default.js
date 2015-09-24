@@ -1,6 +1,6 @@
 ﻿module.exports = {
 	"Redis":{
-		"redisip":"45.55.155.85",
+		"redisip":"104.131.105.222",
 		"redisdb":6
 	},
 	"Services" : {
@@ -16,7 +16,7 @@
 	    "User": "duo",
 	    "Password": "DuoS123",
 	    "Port": 5432,
-	    "Host": "127.0.0.1",
+	    "Host": "104.131.105.222",
 	    "Database": "dvpdb"
 	}
 };
