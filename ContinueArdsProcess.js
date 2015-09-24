@@ -61,7 +61,15 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         var resDataObj = JSON.parse(resData);
                         resInfoData.push(resDataObj);
                     }
-                    postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: resInfoData };
+                    try {
+                        postDataString = {
+                            SessionID: request.SessionId,
+                            OtherInfo: request.OtherInfo,
+                            ResourceInfo: resInfoData
+                        };
+                    }catch(ex){
+                        console.log(ex);
+                    }
                 }
 
                 reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, postDataString, function (result, msg) {
