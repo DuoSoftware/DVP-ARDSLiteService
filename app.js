@@ -984,7 +984,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid', function (req
                 else {
                     infoLogger.ReqResLogger.log('info', '%s End- request/remove :: Result: %s #', logkey, result, { request: req.params });
                     
-                    var jsonString = messageFormatter.FormatMessage(err, "delete request success", false, result);
+                    var jsonString = messageFormatter.FormatMessage(err, "delete request success", true, result);
                     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                     res.end(jsonString);
                 }

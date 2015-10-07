@@ -51,7 +51,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 }
                 
                 var hrOtherData = JSON.parse(handlingResource);
-                var postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
+                var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), Class: request.Class, Type: request.Type, Category: request.Category, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
                 
                 
                 if (Array.isArray(hrOtherData)) {
@@ -63,6 +63,8 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     }
                     try {
                         postDataString = {
+                            Company: request.Company.toString(),
+                            Tenant:Tenant.toString(),
                             SessionID: request.SessionId,
                             OtherInfo: request.OtherInfo,
                             ResourceInfo: resInfoData
