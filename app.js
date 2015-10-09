@@ -31,7 +31,7 @@ var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/requestserver', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -77,7 +77,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/requestserver', function (req, re
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/requestserver', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -121,7 +121,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/requestserver', function (req, res
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/requestservers/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestservers/:class/:type/:category', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -156,7 +156,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/requestservers/:class/:type/:categ
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/requestserver/:serverid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -191,7 +191,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/requestserver/:serverid', function
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/requestserver/:serverid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -228,7 +228,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/requestserver/:serverid', function
 });
 
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/requestmeta', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -272,7 +272,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/requestmeta', function (req, res,
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/requestmeta', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -316,7 +316,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/requestmeta', function (req, res, 
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -351,7 +351,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/requestmeta/:class/:type/:category
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -387,7 +387,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/requestmeta/:class/:type/:category
 });
 
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/resource', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/resource', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -431,7 +431,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/resource', function (req, res, ne
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/resource', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -475,7 +475,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource', function (req, res, nex
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/resource/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -511,7 +511,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/resource/:class/:type/:category', 
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -547,7 +547,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid', function (r
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -584,7 +584,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid', function (r
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/concurrencyslot', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -662,7 +662,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/concurrencysl
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -699,7 +699,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/concurrencysl
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -736,7 +736,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/resource/:resourceid/state/:state'
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourceid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state/:state', function (req, res, next) {
     try {
             req.body.Company = parseInt(req.params["company"]);
             req.body.Tenant = parseInt(req.params["tenant"]);
@@ -771,7 +771,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourc
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourceid/state', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state', function (req, res, next) {
     try {
         var objkey = util.format('Resource:%d:%d:%s', req.params["company"], req.params["tenant"], req.params["resourceid"]);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -804,7 +804,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/:company/:tenant/resource/:resourc
 });
 
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/request', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/request', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -848,7 +848,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/request', function (req, res, nex
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/request', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/request', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -892,7 +892,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/request', function (req, res, next
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/request/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/request/:class/:type/:category', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -927,7 +927,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/request/:class/:type/:category', f
     return next();
 });
 
-server.get('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -962,7 +962,7 @@ server.get('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid', function (req
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -998,7 +998,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid', function (req
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid/reject/:reason', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -1053,7 +1053,7 @@ server.del('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid/reject/:reason'
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -1138,7 +1138,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/request/:sessionid/state/:state', 
 
 
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/continueprocess', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/continueprocess', function (req, res, next) {
     authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
         req.body.Company = parseInt(company);
         req.body.Tenant = parseInt(tenant);
@@ -1154,7 +1154,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/continueprocess', function (req, 
 
 
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/queue', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/queue', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -1189,7 +1189,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/queue', function (req, res, next)
     return next();
 });
 
-server.put('/DVP/API/' + hostVersion + '/ARDS/queue', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/queue', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -1224,7 +1224,7 @@ server.put('/DVP/API/' + hostVersion + '/ARDS/queue', function (req, res, next) 
     return next();
 });
 
-server.post('/DVP/API/' + hostVersion + '/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             req.body.Company = parseInt(company);
@@ -1247,7 +1247,7 @@ server.post('/DVP/API/' + hostVersion + '/ARDS/queue/:queueid/setnextprocessingi
     return next();
 });
 
-server.del('/DVP/API/' + hostVersion + '/ARDS/queue/:sessionid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/queue/:sessionid', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
