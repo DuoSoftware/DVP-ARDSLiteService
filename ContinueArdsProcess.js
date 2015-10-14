@@ -1,9 +1,9 @@
-﻿var resourceHandler = require('DVP-ARDSCommon/ResourceHandler.js');
+﻿var resourceHandler = require('dvp-ardscommon/ResourceHandler.js');
 var util = require('util');
-var reqQueueHandler = require('DVP-ARDSCommon/ReqQueueHandler.js');
-var requestHandler = require('DVP-ARDSCommon/RequestHandler.js');
-var reqServerHandler = require('DVP-ARDSCommon/ReqServerHandler.js');
-var infoLogger = require('DVP-ARDSCommon/InformationLogger.js');
+var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
+var requestHandler = require('dvp-ardscommon/RequestHandler.js');
+var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
+var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var uuid = require('node-uuid');
 
 var ContinueArds = function (request, callback) {
