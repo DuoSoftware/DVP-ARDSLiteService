@@ -6,7 +6,7 @@
   "dependencies": {
     "DVP-ARDSCommon": "DuoSoftware/DVP-ARDSCommon",
     "config": "^1.15.0",
-    "DVP-Common": "DuoSoftware/DVP-Common",
+    "dvp-common": "^0.0.2",
     "node-uuid": "^1.4.3",
     "request": "^2.60.0",
     "restify": "^3.0.3"
