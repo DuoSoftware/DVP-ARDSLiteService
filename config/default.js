@@ -10,6 +10,8 @@
 		"routingServiceVersion": "1.0.0.0"
 	},
 	"Host": {
+		"LBIP":"127.0.0.1",
+		"LBPort":"2225",
 	    "Ip": "127.0.0.1",
 	    "Port": "2225",
 	    "Version": "1.0.0.0"
