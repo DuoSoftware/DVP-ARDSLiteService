@@ -5,13 +5,16 @@
 		"redisdb":6
 	},
 	"Services" : {
-		"routingServiceHost": "ardsliteroutingengine.104.131.67.21.xip.io",
+		"routingServiceHost": "localhost",
 		"routingServicePort": "2223",
-		"routingServiceVersion": "1.0.0.0"
+		"routingServiceVersion": "1.0.0.0",
+		"resourceServiceHost": "127.0.0.1",
+		"resourceServicePort": "8831",
+		"resourceServiceVersion": "6.0"
 	},
 	"Host": {
 		"LBIP":"127.0.0.1",
-		"LBPort":"2225",
+		"LBPort":"8828",
 	    "Ip": "127.0.0.1",
 	    "Port": "8828",
 	    "Version": "1.0.0.0"
@@ -21,7 +24,7 @@
 	    "User": "duo",
 	    "Password": "DuoS123",
 	    "Port": 5432,
-	    "Host": "104.131.105.222",
-	    "Database": "duo"
+	    "Host": "localhost",
+	    "Database": "dvpdb"
 	}
 };
