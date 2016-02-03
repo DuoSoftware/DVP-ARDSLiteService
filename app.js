@@ -121,7 +121,7 @@ server.put('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestservers/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -130,7 +130,7 @@ server.get('/DVP/API/:version/ARDS/requestservers/:class/:type/:category', funct
             infoLogger.ReqResLogger.log('info', '%s Start- requestserver/searchbytag #', logkey, { request: req.params });
             
             var data = req.params;
-            var tags = ["company_*", "tenant_*", "class_" + data["class"], "type_" + data["type"], "category_" + data["category"]];
+            var tags = ["company_*", "tenant_*", "serverType_" + data["serverType"], "requestType_" + data["requestType"]];
             reqServerHandler.SearchReqServerByTags(logkey, tags, function (err, result) {
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestserver/searchbytag :: Error: %s #', logkey, err, { request: req.params });
@@ -316,17 +316,17 @@ server.put('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
             var data = req.params;
-            var objkey = util.format('ReqMETA:%s:%s:%s:%s:%s', company, tenant, data["class"], data["type"], data["category"]);
+            var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/get #', logkey, { request: req.params });
-            reqMetaHandler.GetMeataData(logkey, company, tenant, data["class"], data["type"], data["category"], function (err, result) {
+            reqMetaHandler.GetMeataData(logkey, company, tenant, data["serverType"], data["requestType"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestmeta/get :: Error: %s #', logkey, err, { request: req.params });
                     
@@ -351,17 +351,52 @@ server.get('/DVP/API/:version/ARDS/requestmeta/:class/:type/:category', function
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/requestmeta/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
+    try {
+        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
+
+            var data = req.params;
+            var tags = ["company_" + company, "tenant_" + tenant, "serverType_*", "requestType_*"];
+            var logkey = util.format('[%s]::requestmeta-searchbytag', uuid.v1());
+
+            infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+            infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/get #', logkey, { request: req.params });
+            reqMetaHandler.SearchMeataDataByTags(logkey, tags, function (err, result) {
+                if (err) {
+                    infoLogger.ReqResLogger.log('error', '%s End- requestmeta/get :: Error: %s #', logkey, err, { request: req.params });
+
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                    res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(jsonString);
+                }
+                else {
+                    infoLogger.ReqResLogger.log('info', '%s End- requestmeta/get :: Result: %s #', logkey, result, { request: req.params });
+
+                    var jsonString = messageFormatter.FormatMessage(err, "get request metadata success", true, result);
+                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(jsonString);
+                }
+            });
+        });
+    } catch (ex2) {
+        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonString);
+    }
+    return next();
+});
+
+server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
             var data = req.params;
-            var objkey = util.format('ReqMETA:%s:%s:%s:%s:%s', company, tenant, data["class"], data["type"], data["category"]);
+            var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/remove #', logkey, { request: req.params });
-            reqMetaHandler.RemoveMeataData(logkey, company, tenant, data["class"], data["type"], data["category"], function (err, result) {
+            reqMetaHandler.RemoveMeataData(logkey, company, tenant, data["serverType"], data["requestType"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestmeta/remove :: Error: %s #', logkey, err, { request: req.params });
                     
@@ -892,7 +927,7 @@ server.put('/DVP/API/:version/ARDS/request', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/request/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType', function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
@@ -901,7 +936,7 @@ server.get('/DVP/API/:version/ARDS/request/:class/:type/:category', function (re
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- request/searchbytag #', logkey, { request: req.body });
             var data = req.params;
-            var tags = ["company_" + company, "tenant_" + tenant, "class_" + data["class"], "type_" + data["type"], "category_" + data["category"]];
+            var tags = ["company_" + company, "tenant_" + tenant, "serverType_" + data["serverType"], "requestType_" + data["requestType"]];
             requestHandler.SearchRequestByTags(logkey, tags, function (err, result) {
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', '%s End- request/searchbytag :: Error: %s #', logkey, err, { request: req.body });
