@@ -51,7 +51,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 }
                 
                 var hrOtherData = JSON.parse(handlingResource);
-                var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), Class: request.Class, Type: request.Type, Category: request.Category, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
+                var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
                 
                 
                 if (Array.isArray(hrOtherData)) {
@@ -65,6 +65,8 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         postDataString = {
                             Company: request.Company.toString(),
                             Tenant:Tenant.toString(),
+                            ServerType: request.ServerType,
+                            RequestType: request.RequestType,
                             SessionID: request.SessionId,
                             OtherInfo: request.OtherInfo,
                             ResourceInfo: resInfoData
@@ -74,7 +76,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     }
                 }
 
-                reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, postDataString, function (result, msg) {
+                reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, request.CallbackOption, postDataString, function (result, msg) {
                     if (result) {
                         if (msg == "readdRequired") {
                             requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Server Return 503.", function (err, result) {
@@ -116,9 +118,9 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             console.log(result);
 
             var hrOtherData = JSON.parse(handlingResource);
-            var postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
-            
-            
+            var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
+
+
             if (Array.isArray(hrOtherData)) {
                 var resInfoData = [];
                 for (var i in hrOtherData) {
@@ -126,8 +128,21 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     var resDataObj = JSON.parse(resData);
                     resInfoData.push(resDataObj);
                 }
-                postDataString = { SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: resInfoData };
+                try {
+                    postDataString = {
+                        Company: request.Company.toString(),
+                        Tenant:Tenant.toString(),
+                        ServerType: request.ServerType,
+                        RequestType: request.RequestType,
+                        SessionID: request.SessionId,
+                        OtherInfo: request.OtherInfo,
+                        ResourceInfo: resInfoData
+                    };
+                }catch(ex){
+                    console.log(ex);
+                }
             }
+
             callback(postDataString);
             break;
     }

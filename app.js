@@ -14,6 +14,9 @@ var uuid = require('node-uuid');
 var startArds = require('./StartArds.js');
 var config = require('config');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var jwt = require('restify-jwt');
+var secret = require('dvp-common/Authentication/Secret.js');
+var authorization = require('dvp-common/Authentication/Authorization.js');
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -26,18 +29,18 @@ server.use(restify.fullResponse());
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
+server.use(jwt({secret: secret.Secret}));
 
 var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
 
-server.post('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
-            var objkey = util.format('ReqServer:%d:%d:%s', company, tenant, req.body.ServerID);
+            var objkey = util.format('ReqServer:%d:%d:%s', "*", "*", req.body.ServerID);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
@@ -67,7 +70,6 @@ server.post('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex) {
         var jsonString = messageFormatter.FormatMessage(ex, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -77,11 +79,10 @@ server.post('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('ReqServer:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ServerID);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -112,7 +113,6 @@ server.put('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch(ex1) {
         var jsonString = messageFormatter.FormatMessage(ex1, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -121,9 +121,8 @@ server.put('/DVP/API/:version/ARDS/requestserver', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType',authorization({resource:"requestserver", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
             var logkey = util.format('[%s]::requestserver-searchbytag', uuid.v1());
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
@@ -147,7 +146,6 @@ server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType', fun
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -156,17 +154,16 @@ server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType', fun
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resource:"requestserver", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
             var data = req.params;
-            var objkey = util.format('ReqServer:%s:%s:%s', company, tenant, data["serverid"]);
+            var objkey = util.format('ReqServer:%s:%s:%s', "*", "*", data["serverid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- requestserver/get #', logkey, { request: req.params });
-            reqServerHandler.GetRequestServer(logkey, company, tenant, data["serverid"], function (err, result) {
+            reqServerHandler.GetRequestServer(logkey, "*", "*", data["serverid"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestserver/get :: Error: %s #', logkey, err, { request: req.params });
                     
@@ -182,7 +179,6 @@ server.get('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res,
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -191,18 +187,17 @@ server.get('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res,
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resource:"requestserver", action:"delete"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
             
             var data = req.params;
-            var objkey = util.format('ReqServer:%s:%s:%s', company, tenant, data["serverid"]);
+            var objkey = util.format('ReqServer:%s:%s:%s', "*", "*", data["serverid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- requestserver/remove #', logkey, { request: req.params });
             
-            reqServerHandler.RemoveRequestServer(logkey, company, tenant, data["serverid"], function (err, result) {
+            reqServerHandler.RemoveRequestServer(logkey, "*", "*", data["serverid"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- requestserver/remove :: Error: %s #', logkey, err, { request: req.params });
                     
@@ -218,7 +213,6 @@ server.del('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res,
                     res.end(result);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -228,11 +222,10 @@ server.del('/DVP/API/:version/ARDS/requestserver/:serverid', function (req, res,
 });
 
 
-server.post('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('ReqMETA:%d:%d:%s:%s:%s', req.body.Company, req.body.Tenant, req.body.Class, req.body.Type, req.body.Category);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -263,7 +256,6 @@ server.post('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -272,11 +264,10 @@ server.post('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('ReqMETA:%d:%d:%s:%s:%s', req.body.Company, req.body.Tenant, req.body.Class, req.body.Type, req.body.Category);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -307,7 +298,6 @@ server.put('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -316,10 +306,10 @@ server.put('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authorization({resource:"requestmeta", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -342,7 +332,6 @@ server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', functi
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -351,10 +340,10 @@ server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', functi
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var tags = ["company_" + company, "tenant_" + tenant, "serverType_*", "requestType_*"];
             var logkey = util.format('[%s]::requestmeta-searchbytag', uuid.v1());
@@ -377,7 +366,6 @@ server.get('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -386,10 +374,10 @@ server.get('/DVP/API/:version/ARDS/requestmeta', function (req, res, next) {
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authorization({resource:"requestmeta", action:"delete"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -412,7 +400,6 @@ server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', functi
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -422,11 +409,10 @@ server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType', functi
 });
 
 
-server.post('/DVP/API/:version/ARDS/resource', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -457,7 +443,6 @@ server.post('/DVP/API/:version/ARDS/resource', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -466,11 +451,10 @@ server.post('/DVP/API/:version/ARDS/resource', function (req, res, next) {
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/resource', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -501,7 +485,6 @@ server.put('/DVP/API/:version/ARDS/resource', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -510,10 +493,10 @@ server.put('/DVP/API/:version/ARDS/resource', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var logkey = util.format('[%s::resource-searchbytag]', uuid.v1());
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
@@ -537,7 +520,6 @@ server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category', function (r
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -546,10 +528,10 @@ server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category', function (r
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -573,7 +555,6 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, ne
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -582,10 +563,10 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, ne
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -609,7 +590,6 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, ne
                     res.end(jsonString);
                 }
             });
-        });
     
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
@@ -619,11 +599,10 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid', function (req, res, ne
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -688,7 +667,6 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot', functi
                     });
                     break;
             }
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -697,11 +675,10 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot', functi
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('%d:%d:Session::%s:res::%s', req.body.Company, req.body.Tenant, req.params["sessionid"], req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -725,7 +702,6 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -734,11 +710,10 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -762,7 +737,6 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state', function 
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -771,10 +745,10 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state', function 
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-            req.body.Company = parseInt(req.params["company"]);
-            req.body.Tenant = parseInt(req.params["tenant"]);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
 
             var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -806,15 +780,17 @@ server.put('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state/:
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({resource:"ardsresource", action:"read"}), function (req, res, next) {
     try {
-        var objkey = util.format('Resource:%d:%d:%s', req.params["company"], req.params["tenant"], req.params["resourceid"]);
+        var company = parseInt(req.user.company);
+        var tenant = parseInt(req.user.tenant);
+        var objkey = util.format('Resource:%d:%d:%s', company, tenant, req.params["resourceid"]);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/get #', logkey, { request: req.params });
         var tags = req.body.Tags;
-        resourceHandler.GetResourceState(logkey, req.params["company"], req.params["tenant"], req.params["resourceid"], function (err, result) {
+        resourceHandler.GetResourceState(logkey, company, tenant, req.params["resourceid"], function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/get :: Error: %s #', logkey, err, { request: req.body });
 
@@ -839,11 +815,10 @@ server.get('/DVP/API/:version/ARDS/:company/:tenant/resource/:resourceid/state',
 });
 
 
-server.post('/DVP/API/:version/ARDS/request', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -874,7 +849,6 @@ server.post('/DVP/API/:version/ARDS/request', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -883,11 +857,10 @@ server.post('/DVP/API/:version/ARDS/request', function (req, res, next) {
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/request', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -918,7 +891,6 @@ server.put('/DVP/API/:version/ARDS/request', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -927,10 +899,10 @@ server.put('/DVP/API/:version/ARDS/request', function (req, res, next) {
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType',authorization({resource:"ardsrequest", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var logkey = util.format('[%s::request-searchbytag]', uuid.v1());
             
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
@@ -953,7 +925,6 @@ server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType', function (
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -962,10 +933,10 @@ server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType', function (
     return next();
 });
 
-server.get('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next) {
+server.get('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"ardsrequest", action:"read"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -988,7 +959,6 @@ server.get('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -997,10 +967,10 @@ server.get('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1013,7 +983,7 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next
                     infoLogger.ReqResLogger.log('error', '%s End- request/remove :: Error: %s #', logkey, err, { request: req.params });
                     res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
                     
-                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, result);
                     res.end(jsonString);
                 }
                 else {
@@ -1024,7 +994,6 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1033,10 +1002,10 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid', function (req, res, next
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1079,7 +1048,6 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason', function 
                     }
                 });
             }
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1088,11 +1056,10 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason', function 
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["sessionid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1162,7 +1129,6 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state', function (r
                     res.end(jsonString);
                     break;
             }
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1173,27 +1139,24 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state', function (r
 
 
 
-server.post('/DVP/API/:version/ARDS/continueprocess', function (req, res, next) {
-    authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-        req.body.Company = parseInt(company);
-        req.body.Tenant = parseInt(tenant);
+server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
+        req.body.Company = parseInt(req.user.company);
+        req.body.Tenant = parseInt(req.user.tenant);
         
         continueArdsHandler.ContinueArds(req.body, function (result) {
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             var resultS = JSON.stringify(result);
             res.end(resultS);
         });
-    });
     return next();
 });
 
 
 
-server.post('/DVP/API/:version/ARDS/queue', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1215,7 +1178,6 @@ server.post('/DVP/API/:version/ARDS/queue', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1224,11 +1186,10 @@ server.post('/DVP/API/:version/ARDS/queue', function (req, res, next) {
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/queue', function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1250,7 +1211,6 @@ server.put('/DVP/API/:version/ARDS/queue', function (req, res, next) {
                     res.end(jsonString);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1259,11 +1219,10 @@ server.put('/DVP/API/:version/ARDS/queue', function (req, res, next) {
     return next();
 });
 
-server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid', function (req, res, next) {
+server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid',authorization({resource:"queue", action:"write"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+            req.body.Company = parseInt(req.user.company);
+            req.body.Tenant = parseInt(req.user.tenant);
             
             var objkey = util.format('QueueId:%s', req.params["queueid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1273,7 +1232,6 @@ server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:proces
             var jsonString = messageFormatter.FormatMessage(err, "set next processing request success", true, undefined);
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(jsonString);
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1282,10 +1240,10 @@ server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:proces
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/queue/:sessionid', function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/queue/:sessionid',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
     try {
-        authHandler.ValidateAuthToken(req.header('authorization'), function (company, tenant) {
-            
+            var company = req.user.company;
+            var tenant = req.user.tenant;
             var data = req.params;
             var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -1302,7 +1260,6 @@ server.del('/DVP/API/:version/ARDS/queue/:sessionid', function (req, res, next) 
                     res.end(result);
                 }
             });
-        });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
