@@ -35,6 +35,22 @@ var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
 
+server.post('/DVP/API/:version/DynamicConfigGenerator/CallApp2', function(req,res,next)
+{
+
+    client.get('CONTEXT:test123', function(err, response)
+    {
+        var end = new Date().getTime();
+        var time = end - start;
+
+
+        res.end(response);
+    });
+
+    return next();
+
+});
+
 server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
     try {
             req.body.Company = parseInt(req.user.company);
@@ -1044,7 +1060,7 @@ server.get('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/request/:sessionid/:reason',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req, function (err, company, tenant) {
             if (err != null) {
@@ -1057,7 +1073,7 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- request/remove #', logkey, {request: req.params});
             console.log("remove method hit :: SessionID: " + data["sessionid"]);
-            requestHandler.RemoveRequest(logkey, company, tenant, data["sessionid"], function (err, result) {
+            requestHandler.RemoveRequest(logkey, company, tenant, data["sessionid"],data["reason"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- request/remove :: Error: %s #', logkey, err, {request: req.params});
                     res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
@@ -1095,41 +1111,22 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason',authorizat
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- request/reject #', logkey, {request: req.params});
             console.log("reject method hit :: SessionID: " + data["sessionid"] + " :: Reason: " + data["reason"]);
-            if (data["reason"] == "NoSession" || data["reason"] == "ClientRejected") {
-                requestHandler.RemoveRequest(logkey, company, tenant, data["sessionid"], function (err, result) {
-                    if (err) {
-                        infoLogger.ReqResLogger.log('error', '%s End- request/reject :: Error: %s #', logkey, err, {request: req.params});
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROE", false, result);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
-                        res.end(jsonString);
-                    }
-                    else {
-                        infoLogger.ReqResLogger.log('info', '%s End- request/reject :: Result: %s #', logkey, result, {request: req.params});
-                        console.log(result);
-                        var jsonString = messageFormatter.FormatMessage(err, "reject requetst success", true, result);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
-                        res.end(jsonString);
-                    }
-                });
-            }
-            else {
-                requestHandler.RejectRequest(logkey, company, tenant, data["sessionid"], data["reason"], function (err, result) {
-                    if (err != null) {
-                        infoLogger.ReqResLogger.log('error', '%s End- request/reject :: Error: %s #', logkey, err, {request: req.params});
+            requestHandler.RejectRequest(logkey, company, tenant, data["sessionid"], data["reason"], function (err, result) {
+                if (err != null) {
+                    infoLogger.ReqResLogger.log('error', '%s End- request/reject :: Error: %s #', logkey, err, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROE", false, result);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
-                        res.end(jsonString);
-                    }
-                    else {
-                        infoLogger.ReqResLogger.log('info', '%s End- request/reject :: Result: %s #', logkey, result, {request: req.params});
-                        console.log(result);
-                        var jsonString = messageFormatter.FormatMessage(err, "reject requetst success", true, result);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
-                        res.end(jsonString);
-                    }
-                });
-            }
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROE", false, result);
+                    res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+                else {
+                    infoLogger.ReqResLogger.log('info', '%s End- request/reject :: Result: %s #', logkey, result, {request: req.params});
+                    console.log(result);
+                    var jsonString = messageFormatter.FormatMessage(err, "reject requetst success", true, result);
+                    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+            });
         });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
@@ -1348,17 +1345,18 @@ server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:proces
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/queue/:sessionid',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req, function (err, company, tenant) {
             if (err != null) {
                 throw  err;
             }
+
             var data = req.params;
-            var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
+            var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionId"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
 
-            reqQueueHandler.RemoveRequestFromQueue(logkey, data["queueId"], data["sessionid"], function (err, result) {
+            reqQueueHandler.RemoveRequestFromQueue(logkey, company, tenant, data["queueId"], data["sessionId"], function (err, result) {
                 if (err) {
                     var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                     res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
