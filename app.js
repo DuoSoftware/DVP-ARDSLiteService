@@ -35,21 +35,6 @@ var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
 
-server.post('/DVP/API/:version/DynamicConfigGenerator/CallApp2', function(req,res,next)
-{
-
-    client.get('CONTEXT:test123', function(err, response)
-    {
-        var end = new Date().getTime();
-        var time = end - start;
-
-
-        res.end(response);
-    });
-
-    return next();
-
-});
 
 server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
     try {
@@ -525,6 +510,91 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
                     infoLogger.ReqResLogger.log('info', '%s End- resource/set :: Result: %s #', logkey, result, {request: req.body});
 
                     var jsonString = messageFormatter.FormatMessage(err, "update resource info failed", false, undefined);
+                    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+            });
+        });
+    } catch (ex2) {
+        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonString);
+    }
+    return next();
+});
+
+server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    try {
+        authHandler.ValidateAuthToken(req, function (err, company, tenant) {
+            if (err != null) {
+                throw  err;
+            }
+            req.body.Company = parseInt(company);
+            req.body.Tenant = parseInt(tenant);
+
+            var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
+            var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+
+            infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+            infoLogger.ReqResLogger.log('info', '%s Start- resource/share #', logkey, {request: req.body});
+            resourceHandler.ShareResource(logkey, req.body, function (err, result, vid) {
+                if (err) {
+                    infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'false', {request: req.body});
+                    infoLogger.ReqResLogger.log('error', '%s End- resource/share :: Error: %s #', logkey, err, {request: req.body});
+
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                    res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+                else if (result === "OK") {
+                    infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'true', {request: req.body});
+
+                    var jsonString = messageFormatter.FormatMessage(err, "share resource info success", true, undefined);
+                    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+                else {
+                    infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'false', {request: req.body});
+
+                    var jsonString = messageFormatter.FormatMessage(err, "share resource info failed", false, undefined);
+                    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+            });
+        });
+    } catch (ex2) {
+        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonString);
+    }
+    return next();
+});
+
+server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    try {
+        authHandler.ValidateAuthToken(req, function (err, company, tenant) {
+            if (err != null) {
+                throw  err;
+            }
+            var data = req.params;
+            var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
+            var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+
+            infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+            infoLogger.ReqResLogger.log('info', '%s Start- resource/removesSharing #', logkey, {request: req.params});
+
+            resourceHandler.RemoveShareResource(logkey, company, tenant, data["resourceid"], req.body.HandlingTypes, function (err, result) {
+                if (err) {
+                    infoLogger.ReqResLogger.log('error', '%s End- resource/removesSharing :: Error: %s #', logkey, err, {request: req.params});
+
+                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                    res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                    res.end(jsonString);
+                }
+                else {
+                    infoLogger.ReqResLogger.log('info', '%s End- resource/removesSharing :: Result: %s #', logkey, result, {request: req.params});
+
+                    var jsonString = messageFormatter.FormatMessage(err, "delete resource info success", true, undefined);
                     res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
                     res.end(jsonString);
                 }
