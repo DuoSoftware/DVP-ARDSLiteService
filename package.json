@@ -5,8 +5,8 @@
   "main": "app.js",
   "dependencies": {
     "config": "^1.19.0",
-    "dvp-common": "^0.0.18",
-    "dvp-ardscommon": "^1.0.17",
+    "dvp-common": "^0.1.1",
+    "dvp-ardscommon": "^1.0.18",
     "lodash": "^4.2.1",
     "node-uuid": "^1.4.7",
     "request": "^2.69.0",
