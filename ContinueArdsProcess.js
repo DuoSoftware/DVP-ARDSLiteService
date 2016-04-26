@@ -49,9 +49,25 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
                     reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId);
                 }
+
+                var reqSkills = [];
+                for (var i=request.AttributeInfo.length-1; i>=0; i--) {
+                    for (var j=request.AttributeInfo[i].AttributeNames.length-1; j>=0; j--) {
+                        reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
+                    }
+                }
                 
                 var hrOtherData = JSON.parse(handlingResource);
-                var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
+                var postDataString = {
+                    Company: request.Company.toString(),
+                    Tenant: request.Tenant.toString(),
+                    ServerType: request.ServerType,
+                    RequestType: request.RequestType,
+                    SessionID: request.SessionId,
+                    Skills: reqSkills.join(),
+                    OtherInfo: request.OtherInfo,
+                    ResourceInfo: hrOtherData
+                };
                 
                 
                 if (Array.isArray(hrOtherData)) {
@@ -68,6 +84,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
+                            Skills: reqSkills.join(),
                             OtherInfo: request.OtherInfo,
                             ResourceInfo: resInfoData
                         };
