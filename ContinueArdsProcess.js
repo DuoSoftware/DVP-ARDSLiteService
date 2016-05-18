@@ -16,9 +16,17 @@ var ContinueArds = function (request, callback) {
     if (request.ReqHandlingAlgo == "QUEUE") {
         console.log("Continue Queued Rqquest:: hResource : "+ request.HandlingResource);
         handlingResource = request.HandlingResource;
-
-        DoReplyServing(logkey, request, handlingResource, function (reply) {
-            callback(reply);
+        requestHandler.GetRequest(logkey, request.Company, request.Tenant, request.SessionId, function(err, result){
+            if(err){
+                console.log(err);
+            }else {
+                if(result){
+                    var jResult = JSON.parse(result);
+                    DoReplyServing(logkey, jResult, handlingResource, function (reply) {
+                        callback(reply);
+                    });
+                }
+            }
         });
     }
     else {
@@ -48,6 +56,10 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 if (request.ReqHandlingAlgo == "QUEUE") {
                     var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
                     reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId);
+                    if(request.QPositionEnable) {
+                        reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, function () {
+                        });
+                    }
                 }
 
                 var reqSkills = [];
