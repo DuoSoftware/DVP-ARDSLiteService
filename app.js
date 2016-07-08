@@ -570,7 +570,7 @@ server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ards
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing/:handlingType',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req, function (err, company, tenant) {
             if (err != null) {
@@ -583,7 +583,7 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing',authoriz
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- resource/removesSharing #', logkey, {request: req.params});
 
-            resourceHandler.RemoveShareResource(logkey, company, tenant, data["resourceid"], req.body.HandlingTypes, function (err, result) {
+            resourceHandler.RemoveShareResource(logkey, company, tenant, data["resourceid"], data["handlingType"], function (err, result) {
                 if (err) {
                     infoLogger.ReqResLogger.log('error', '%s End- resource/removesSharing :: Error: %s #', logkey, err, {request: req.params});
 
