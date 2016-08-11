@@ -740,7 +740,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
             infoLogger.ReqResLogger.log('info', '%s Start- resource/cs/update #', logkey, {request: req.body});
             switch (req.body.State) {
                 case "Available":
-                    resourceHandler.UpdateSlotStateAvailable(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.params["resourceid"], req.body.SlotId, "", req.body.OtherInfo, function (err, result) {
+                    resourceHandler.UpdateSlotStateAvailable(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.params["resourceid"], req.body.SlotId, "", req.body.OtherInfo, "Available", function (err, result) {
                         if (err != null) {
                             infoLogger.ReqResLogger.log('error', '%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
