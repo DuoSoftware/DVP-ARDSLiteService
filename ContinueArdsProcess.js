@@ -44,7 +44,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 
     switch (request.ServingAlgo) {
         case "CALLBACK":
-            if (handlingResource != "No matching resources at the moment") {
+            if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
                 var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
                 console.log(result);
                 requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
