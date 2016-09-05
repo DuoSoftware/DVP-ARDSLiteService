@@ -1301,15 +1301,17 @@ server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ar
         }
         req.body.Company = parseInt(company);
         req.body.Tenant = parseInt(tenant);
-
+        console.log("Start======================================:: "+ Date.now());
         continueArdsHandler.ContinueArds(req.body, function (err, result) {
             if(err){
+                console.log("END======================================:: "+ Date.now());
                 res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
-                res.end(err);
+                res.end();
             }else {
+                console.log("END======================================:: "+ Date.now());
                 res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
-                var resultS = JSON.stringify(result);
-                res.end(resultS);
+                //var resultS = JSON.stringify(result);
+                res.end();
             }
         });
         return next();
