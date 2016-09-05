@@ -1302,10 +1302,15 @@ server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ar
         req.body.Company = parseInt(company);
         req.body.Tenant = parseInt(tenant);
 
-        continueArdsHandler.ContinueArds(req.body, function (result) {
-            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
-            var resultS = JSON.stringify(result);
-            res.end(resultS);
+        continueArdsHandler.ContinueArds(req.body, function (err, result) {
+            if(err){
+                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                res.end(err);
+            }else {
+                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                var resultS = JSON.stringify(result);
+                res.end(resultS);
+            }
         });
         return next();
     });

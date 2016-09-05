@@ -19,12 +19,15 @@ var ContinueArds = function (request, callback) {
         requestHandler.GetRequest(logkey, request.Company, request.Tenant, request.SessionId, function(err, result){
             if(err){
                 console.log(err);
+                callback(err, undefined);
             }else {
                 if(result){
                     var jResult = JSON.parse(result);
                     DoReplyServing(logkey, jResult, handlingResource, function (reply) {
-                        callback(reply);
+                        callback(undefined, reply);
                     });
+                }else{
+                    callback(new Error("No Request Found"), undefined);
                 }
             }
         });
@@ -51,6 +54,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     if (err) {
                         console.log(err);
                     }
+                    callback(handlingResource);
                 });
                 
                 if (request.ReqHandlingAlgo == "QUEUE") {
@@ -138,8 +142,10 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         });
                     }
                 });
+            }else{
+                callback(handlingResource);
             }
-            callback(handlingResource);
+
             break;
 
         default:
