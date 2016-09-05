@@ -13,8 +13,8 @@ var ContinueArds = function (request, callback) {
     var selectionResult = "";
     var handlingResource = "";
     
-    if (request.ReqHandlingAlgo == "QUEUE") {
-        console.log("Continue Queued Rqquest:: hResource : "+ request.HandlingResource);
+    if (request && request.ReqHandlingAlgo && request.ReqHandlingAlgo == "QUEUE") {
+        console.log("Continue Queued Rqquest : " +request.SessionId+" :: hResource : "+ request.HandlingResource);
         handlingResource = request.HandlingResource;
         requestHandler.GetRequest(logkey, request.Company, request.Tenant, request.SessionId, function(err, result){
             if(err){
@@ -22,23 +22,27 @@ var ContinueArds = function (request, callback) {
                 callback(err, undefined);
             }else {
                 if(result){
+                    console.log("Request On Continue :: " + result);
                     var jResult = JSON.parse(result);
                     DoReplyServing(logkey, jResult, handlingResource, function (reply) {
                         callback(undefined, reply);
                     });
                 }else{
+                    console.log("Request On Continue :: No Request Found :: " + result);
                     callback(new Error("No Request Found"), undefined);
                 }
             }
         });
     }
-    else {
+    else if(request && request.ReqHandlingAlgo && request.ReqHandlingAlgo == "DIRECT"){
         var jsonOtherInfo = JSON.stringify(request.OtherInfo);
         resourceHandler.DoResourceSelection(request.Company, request.Tenant, request.ResourceCount, request.SessionId, request.Class, request.Type, request.Category, request.SelectionAlgo, request.HandlingAlgo, jsonOtherInfo, function (err, res, obj) {
             DoReplyServing(logkey, request, JSON.stringify(obj), function (reply) {
                 callback(undefined, reply);
             });
         });
+    }else{
+        callback(new Error("Invalid Request"), undefined);
     }
 };
 
@@ -54,6 +58,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     if (err) {
                         console.log(err);
                     }
+                    console.log("=======================DoReplyServing Done=================================");
                     callback(handlingResource);
                 });
                 
