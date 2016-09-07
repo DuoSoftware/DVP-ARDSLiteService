@@ -64,7 +64,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 
                 if (request.ReqHandlingAlgo == "QUEUE") {
                     var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
-                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId);
+                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId);
                     if(request.QPositionEnable) {
                         reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, function () {
                         });

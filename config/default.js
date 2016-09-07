@@ -1,12 +1,12 @@
 ﻿module.exports = {
 	"Redis":{
-		"redisip":"192.168.51.243",
-		"redisport":6379,
+		"redisip":"45.55.142.207",
+		"redisport":6389,
 		"redisdb":6,
 		"password":"DuoS123"
 	},
 	"Services" : {
-		"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmcm9kb29kIiwianRpIjoiMDIxYzQ4MWEtNTUxMC00MzlkLTk1YjgtZWY5OTY3MmY1ZmFhIiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjIzMzQxMjMzNjAsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NzAyMDk3NjB9.Wh-E2OVg6nwsicj9yQdx92js6rPg6pzkZkmwk69FHmc",
+		"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiYWEzOGRmZWYtNDFhOC00MWUyLTgwMzktOTJjZTY0YjM4ZDFmIiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE5MDIzODExMTgsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NzAzODExMTh9.Gmlu00Uj66Fzts-w6qEwNUz46XYGzE8wHUhAJOFtiRo",
 		"routingServiceHost": "ardsliteroutingengine.pickme.lk",
 		"routingServicePort": "2223",
 		"routingServiceVersion": "1.0.0.0",
@@ -23,15 +23,15 @@
 	},
 	"DB": {
 	    "Type": "postgres",
-	    "User": "pickme",
+	    "User": "duo",
 	    "Password": "DuoS123",
 	    "Port": 5432,
-	    "Host": "192.168.51.241",
-	    "Database": "pickme"
+	    "Host": "104.236.231.11",
+	    "Database": "duo"
 	},
 	"Security": {
-		"ip" : "192.168.51.243",
-		"port": 6379,
+		"ip" : "45.55.142.207",
+		"port": 6389,
 		"password":"DuoS123"
 	},
 	"RabbitMQ":
