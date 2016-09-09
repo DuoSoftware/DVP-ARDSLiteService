@@ -805,7 +805,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
     return next();
 });
 
-server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid/direction/:direction',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
         authHandler.ValidateAuthToken(req, function (err, company, tenant) {
             if (err != null) {
@@ -820,7 +820,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- resource/cs/updatebysessionid #', logkey, {request: req.body});
 
-            resourceHandler.UpdateSlotStateBySessionId(logkey, req.body.Company, req.body.Tenant, req.body.RequestType, req.params["resourceid"], req.params["sessionid"], req.body.State, req.body.Reason, req.body.OtherInfo, function (err, result) {
+            resourceHandler.UpdateSlotStateBySessionId(logkey, req.body.Company, req.body.Tenant, req.body.RequestType, req.params["resourceid"], req.params["sessionid"], req.body.State, req.body.Reason, req.body.OtherInfo, req.params["direction"], function (err, result) {
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', 'End- resource/cs/updatebysessionid :: Error: %s #', err, {request: req.body});
 
