@@ -54,21 +54,31 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
                 var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
                 console.log(result);
-                requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log("=======================DoReplyServing Done=================================");
-                    callback(handlingResource);
-                });
+
                 
                 if (request.ReqHandlingAlgo == "QUEUE") {
                     var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
-                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId);
+                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function(result){
+                        requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            console.log("=======================DoReplyServing Done=================================");
+                            callback(handlingResource);
+                        });
+                    });
                     if(request.QPositionEnable) {
                         reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, function () {
                         });
                     }
+                }else{
+                    requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log("=======================DoReplyServing Done=================================");
+                        callback(handlingResource);
+                    });
                 }
 
                 var reqSkills = [];
