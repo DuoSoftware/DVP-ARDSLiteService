@@ -743,6 +743,11 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                     }
                 });
                 break;
+            default :
+                var jsonString = messageFormatter.FormatMessage(new Error("Invalid Request State"), "ERROR", false, undefined);
+                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                res.end(jsonString);
+                break;
         }
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
