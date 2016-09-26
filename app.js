@@ -608,8 +608,8 @@ server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category',authorizatio
 
 server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        req.body.Company = parseInt(req.user.company);
-        req.body.Tenant = parseInt(req.user.tenant);
+        var company = req.user.company;
+        var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
