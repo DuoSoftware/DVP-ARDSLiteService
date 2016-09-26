@@ -875,7 +875,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({re
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/get #', logkey, {request: req.params});
-        var tags = req.body.Tags;
+        //var tags = req.body.Tags;
         resourceHandler.GetResourceState(logkey, company, tenant, req.params["resourceid"], function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/get :: Error: %s #', logkey, err, {request: req.body});
