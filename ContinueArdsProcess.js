@@ -68,7 +68,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         });
                     });
                     if(request.QPositionEnable) {
-                        reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, function () {
+                        reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, request.CallbackOption, function () {
                         });
                     }
                 }else{
