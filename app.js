@@ -414,6 +414,7 @@ server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresou
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
+        req.body.UserName = parseInt(req.user.iss);
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -456,6 +457,7 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
+        req.body.UserName = parseInt(req.user.iss);
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -498,6 +500,7 @@ server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ards
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
+        req.body.UserName = parseInt(req.user.iss);
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);

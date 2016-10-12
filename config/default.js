@@ -12,7 +12,10 @@
 		"routingServiceVersion": "1.0.0.0",
 		"resourceServiceHost": "resourceservice.app.veery.cloud",
 		"resourceServicePort": "8831",
-		"resourceServiceVersion": "1.0.0.0"
+		"resourceServiceVersion": "1.0.0.0",
+		"notificationServiceHost": "notificationservice.app.veery.cloud",
+		"notificationServicePort": "8831",
+		"notificationServiceVersion": "1.0.0.0"
 	},
 	"Host": {
 		"LBIP":"127.0.0.1",
