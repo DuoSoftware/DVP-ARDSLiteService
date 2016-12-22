@@ -1,7 +1,7 @@
 ﻿module.exports = {
 	"Redis":{
-		"redisip":"45.55.142.207",
-		"redisport":6389,
+		"redisip":"104.131.67.21",
+		"redisport":6379,
 		"redisdb":6,
 		"password":"DuoS123"
 	},
