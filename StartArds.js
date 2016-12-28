@@ -45,14 +45,17 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                         });
                         switch (requestObj.ReqHandlingAlgo) {
                             case "QUEUE":
-                                reqQueueHandler.AddRequestToQueue(logKey, requestObj, function (err, result) {
+                                var replyObj = {};
+                                reqQueueHandler.AddRequestToQueue(logKey, requestObj, function (err, result, qPosition) {
                                     if (err) {
                                         console.log(err);
-                                        callback(err, "Add Request to Queue Failed. sessionId :: " + requestObj.SessionId, vid);
+                                        replyObj = {Position: qPosition, Message: "Add Request to Queue Failed. sessionId :: " + requestObj.SessionId};
+                                        callback(err, replyObj, vid);
                                     }
                                     else {
                                         console.log("Request added to queue. sessionId :: " + requestObj.SessionId);
-                                        callback(err, "Request added to queue. sessionId :: " + requestObj.SessionId, vid);
+                                        replyObj = {Position: qPosition, Message: "Request added to queue. sessionId :: " + requestObj.SessionId};
+                                        callback(err, replyObj, vid);
                                     }
                                 });
                                 break;
