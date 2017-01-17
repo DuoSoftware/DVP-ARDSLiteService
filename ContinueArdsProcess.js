@@ -111,7 +111,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     try {
                         postDataString = {
                             Company: request.Company.toString(),
-                            Tenant: Tenant.toString(),
+                            Tenant: request.Tenant.toString(),
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
@@ -200,7 +200,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     try {
                         postDataString = {
                             Company: request.Company.toString(),
-                            Tenant: Tenant.toString(),
+                            Tenant: request.Tenant.toString(),
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
@@ -217,7 +217,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             } else {
                 postDataString = {
                     Company: request.Company.toString(),
-                    Tenant: Tenant.toString(),
+                    Tenant: request.Tenant.toString(),
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
