@@ -175,7 +175,16 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             }
 
             var hrOtherData = JSON.parse(handlingResource);
-            var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
+            var postDataString = {
+                Company: request.Company.toString(),
+                Tenant: request.Tenant.toString(),
+                ServerType: request.ServerType,
+                RequestType: request.RequestType,
+                SessionID: request.SessionId,
+                Skills: reqSkills.join(),
+                OtherInfo: request.OtherInfo,
+                ResourceInfo: hrOtherData
+            };
 
 
             if (Array.isArray(hrOtherData)) {
