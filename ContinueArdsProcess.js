@@ -167,6 +167,13 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
             console.log(result);
 
+            var reqSkills = [];
+            for (var i=request.AttributeInfo.length-1; i>=0; i--) {
+                for (var j=request.AttributeInfo[i].AttributeNames.length-1; j>=0; j--) {
+                    reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
+                }
+            }
+
             var hrOtherData = JSON.parse(handlingResource);
             var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
 
@@ -185,6 +192,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         ServerType: request.ServerType,
                         RequestType: request.RequestType,
                         SessionID: request.SessionId,
+                        Skills: reqSkills.join(),
                         OtherInfo: request.OtherInfo,
                         ResourceInfo: resInfoData
                     };
