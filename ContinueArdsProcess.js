@@ -36,8 +36,8 @@ var ContinueArds = function (request, callback) {
     }
     else if(request && request.ReqHandlingAlgo && request.ReqHandlingAlgo == "DIRECT"){
         var jsonOtherInfo = JSON.stringify(request.OtherInfo);
-        resourceHandler.DoResourceSelection(request.Company, request.Tenant, request.ResourceCount, request.SessionId, request.Class, request.Type, request.Category, request.SelectionAlgo, request.HandlingAlgo, jsonOtherInfo, function (err, res, obj) {
-            DoReplyServing(logkey, request, JSON.stringify(obj), function (reply) {
+        resourceHandler.DoResourceSelection(request.Company, request.Tenant, request.ResourceCount, request.SessionId, request.ServerType, request.RequestType, request.SelectionAlgo, request.HandlingAlgo, jsonOtherInfo, function (err, res, obj) {
+            DoReplyServing(logkey, request, obj, function (reply) {
                 callback(undefined, reply);
             });
         });

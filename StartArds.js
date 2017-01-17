@@ -60,7 +60,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                                 });
                                 break;
                             case "DIRECT":
-                                contArdsHandler.ContinueArds(requestObj, function (handlingResource) {
+                                contArdsHandler.ContinueArds(requestObj, function (err, handlingResource) {
                                     callback(err, handlingResource, vid);
                                 });
                                 break;
