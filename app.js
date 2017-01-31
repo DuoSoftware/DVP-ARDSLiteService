@@ -629,7 +629,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/get :: Result: %s :: Vid: %d #', logkey, result, vid, {request: req.params});
-                var resData = {obj: JSON.parse(result), vid: vid};
+                var resData = {obj: result, vid: vid};
 
                 var jsonString = messageFormatter.FormatMessage(err, "get resource info success", true, resData);
                 res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
