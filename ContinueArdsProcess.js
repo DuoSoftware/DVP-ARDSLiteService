@@ -36,8 +36,8 @@ var ContinueArds = function (request, callback) {
     }
     else if(request && request.ReqHandlingAlgo && request.ReqHandlingAlgo == "DIRECT"){
         var jsonOtherInfo = JSON.stringify(request.OtherInfo);
-        resourceHandler.DoResourceSelection(request.Company, request.Tenant, request.ResourceCount, request.SessionId, request.Class, request.Type, request.Category, request.SelectionAlgo, request.HandlingAlgo, jsonOtherInfo, function (err, res, obj) {
-            DoReplyServing(logkey, request, JSON.stringify(obj), function (reply) {
+        resourceHandler.DoResourceSelection(request.Company, request.Tenant, request.ResourceCount, request.SessionId, request.ServerType, request.RequestType, request.SelectionAlgo, request.HandlingAlgo, jsonOtherInfo, function (err, res, obj) {
+            DoReplyServing(logkey, request, obj, function (reply) {
                 callback(undefined, reply);
             });
         });
@@ -55,10 +55,10 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
                 console.log(result);
 
-                
+
                 if (request.ReqHandlingAlgo == "QUEUE") {
                     var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
-                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function(result){
+                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
                         requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                             if (err) {
                                 console.log(err);
@@ -67,11 +67,11 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             callback(handlingResource);
                         });
                     });
-                    if(request.QPositionEnable) {
+                    if (request.QPositionEnable) {
                         reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, request.CallbackOption, function () {
                         });
                     }
-                }else{
+                } else {
                     requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                         if (err) {
                             console.log(err);
@@ -82,12 +82,12 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 }
 
                 var reqSkills = [];
-                for (var i=request.AttributeInfo.length-1; i>=0; i--) {
-                    for (var j=request.AttributeInfo[i].AttributeNames.length-1; j>=0; j--) {
+                for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
+                    for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
                         reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
                     }
                 }
-                
+
                 var hrOtherData = JSON.parse(handlingResource);
                 var postDataString = {
                     Company: request.Company.toString(),
@@ -99,8 +99,8 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     OtherInfo: request.OtherInfo,
                     ResourceInfo: hrOtherData
                 };
-                
-                
+
+
                 if (Array.isArray(hrOtherData)) {
                     var resInfoData = [];
                     for (var i in hrOtherData) {
@@ -111,7 +111,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     try {
                         postDataString = {
                             Company: request.Company.toString(),
-                            Tenant:Tenant.toString(),
+                            Tenant: request.Tenant.toString(),
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
@@ -119,7 +119,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             OtherInfo: request.OtherInfo,
                             ResourceInfo: resInfoData
                         };
-                    }catch(ex){
+                    } catch (ex) {
                         console.log(ex);
                     }
                 }
@@ -157,7 +157,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         });
                     }
                 });
-            }else{
+            } else {
                 callback(handlingResource);
             }
 
@@ -167,35 +167,71 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
             console.log(result);
 
-            var hrOtherData = JSON.parse(handlingResource);
-            var postDataString = {Company: request.Company.toString(), Tenant: request.Tenant.toString(), ServerType: request.ServerType, RequestType: request.RequestType, SessionID: request.SessionId, OtherInfo: request.OtherInfo, ResourceInfo: hrOtherData };
-
-
-            if (Array.isArray(hrOtherData)) {
-                var resInfoData = [];
-                for (var i in hrOtherData) {
-                    var resData = hrOtherData[i];
-                    var resDataObj = JSON.parse(resData);
-                    resInfoData.push(resDataObj);
-                }
-                try {
-                    postDataString = {
-                        Company: request.Company.toString(),
-                        Tenant:Tenant.toString(),
-                        ServerType: request.ServerType,
-                        RequestType: request.RequestType,
-                        SessionID: request.SessionId,
-                        OtherInfo: request.OtherInfo,
-                        ResourceInfo: resInfoData
-                    };
-                }catch(ex){
-                    console.log(ex);
+            var reqSkills = [];
+            for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
+                for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
+                    reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
                 }
             }
 
-            callback(postDataString);
+            if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
+
+
+                var hrOtherData = JSON.parse(handlingResource);
+                var postDataString = {
+                    Company: request.Company.toString(),
+                    Tenant: request.Tenant.toString(),
+                    ServerType: request.ServerType,
+                    RequestType: request.RequestType,
+                    SessionID: request.SessionId,
+                    Skills: reqSkills.join(),
+                    OtherInfo: request.OtherInfo,
+                    ResourceInfo: hrOtherData
+                };
+
+
+                if (Array.isArray(hrOtherData)) {
+                    var resInfoData = [];
+                    for (var i in hrOtherData) {
+                        var resData = hrOtherData[i];
+                        var resDataObj = JSON.parse(resData);
+                        resInfoData.push(resDataObj);
+                    }
+                    try {
+                        postDataString = {
+                            Company: request.Company.toString(),
+                            Tenant: request.Tenant.toString(),
+                            ServerType: request.ServerType,
+                            RequestType: request.RequestType,
+                            SessionID: request.SessionId,
+                            Skills: reqSkills.join(),
+                            OtherInfo: request.OtherInfo,
+                            ResourceInfo: resInfoData
+                        };
+                    } catch (ex) {
+                        console.log(ex);
+                    }
+                }
+
+                callback(postDataString);
+            } else {
+                postDataString = {
+                    Company: request.Company.toString(),
+                    Tenant: request.Tenant.toString(),
+                    ServerType: request.ServerType,
+                    RequestType: request.RequestType,
+                    SessionID: request.SessionId,
+                    Skills: reqSkills.join(),
+                    OtherInfo: request.OtherInfo,
+                    ResourceInfo: undefined
+                };
+
+                callback(postDataString);
+            }
+
             break;
     }
+
 };
 
 module.exports.ContinueArds = ContinueArds;
