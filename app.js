@@ -455,16 +455,15 @@ server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresou
 
 server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     try {
-        req.body.Company = parseInt(req.user.company);
-        req.body.Tenant = parseInt(req.user.tenant);
-        req.body.UserName = req.user.iss;
+        var company = parseInt(req.user.company);
+        var tenant = parseInt(req.user.tenant);
 
-        var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
+        var objkey = util.format('Resource:%d:%d:%s', company, tenant, req.body.ResourceId);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/set #', logkey, {request: req.body});
-        resourceHandler.SetResource(logkey, req.body.ResourceData, req.body.CVid, function (err, result, vid) {
+        resourceHandler.SetResource(logkey, company, tenant, req.body, function (err, result, vid) {
             if (err) {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/set :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- resource/set :: Error: %s #', logkey, err, {request: req.body});
