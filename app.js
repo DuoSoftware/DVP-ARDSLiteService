@@ -469,7 +469,7 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
                 infoLogger.ReqResLogger.log('error', '%s End- resource/set :: Error: %s #', logkey, err, {request: req.body});
 
                 var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
                 res.end(jsonString);
             }
             else if (result === "OK") {
@@ -489,7 +489,7 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
         });
     } catch (ex2) {
         var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(jsonString);
     }
     return next();
