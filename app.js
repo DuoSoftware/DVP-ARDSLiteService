@@ -728,7 +728,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                 break;
 
             case "Connected":
-                resourceHandler.UpdateSlotStateConnected(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.OtherInfo, function (err, result) {
+                resourceHandler.UpdateSlotStateConnected(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.OtherInfo, "inbound", function (err, result) {
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', 'End- resource/cs/update :: Error: %s #', err, {request: req.body});
 
