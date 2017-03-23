@@ -37,6 +37,8 @@ var hostVersion = config.Host.Version;
 
 
 server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
+
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -52,27 +54,24 @@ server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requ
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/add :: Result: %s #', logkey, 'false', { request: req.body });
                 infoLogger.ReqResLogger.log('error', '%s End- requestserver/add :: Error: %s #', logkey, err, { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/add :: Result: %s #', logkey, 'true', { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "Add request server success", true, undefined);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "Add request server success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/add :: Result: %s #', logkey, 'false', { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "Add request server filed", false, undefined);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "Add request server filed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex) {
-        var jsonString = messageFormatter.FormatMessage(ex, "ERROR", false, undefined);
+        jsonString = messageFormatter.FormatMessage(ex, "ERROR", false, undefined);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(jsonString);
     }
@@ -81,6 +80,9 @@ server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requ
 });
 
 server.put('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
+
+    var jsonString;
+
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -95,34 +97,32 @@ server.put('/DVP/API/:version/ARDS/requestserver',authorization({resource:"reque
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/set :: Result: %s #', logkey, 'false', { request: req.body });
                 infoLogger.ReqResLogger.log('error', '%s End- requestserver/set :: Error: %s #', logkey, err, { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/set :: Result: %s #', logkey, 'true', { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "Update request server success", true, undefined);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "Update request server success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/set :: Result: %s #', logkey, 'false', { request: req.body });
 
-                var jsonString = messageFormatter.FormatMessage(err, "Update request server failed", false, undefined);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "Update request server failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch(ex1) {
-        var jsonString = messageFormatter.FormatMessage(ex1, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex1, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType',authorization({resource:"requestserver", action:"read"}), function (req, res, next) {
+
+    var jsonString;
     try {
 
         var logkey = util.format('[%s]::requestserver-searchbytag', uuid.v1());
@@ -134,28 +134,25 @@ server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType',auth
         reqServerHandler.SearchReqServerByTags(logkey, tags, function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestserver/searchbytag :: Error: %s #', logkey, err, { request: req.params });
-
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/searchbytag :: Result: %j #', logkey, result, { request: req.params });
-
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                var jsonString = messageFormatter.FormatMessage(err, "get request servers success", true, result);
+                jsonString = messageFormatter.FormatMessage(undefined, "get request servers success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resource:"requestserver", action:"read"}), function (req, res, next) {
+    var jsonString;
+
     try {
 
         var data = req.params;
@@ -167,28 +164,24 @@ server.get('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resou
         reqServerHandler.GetRequestServer(logkey, "*", "*", data["serverid"], function (err, result) {
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestserver/get :: Error: %s #', logkey, err, { request: req.params });
-
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/get :: Result: %s #', logkey, result, { request: req.params });
-
-                var jsonString = messageFormatter.FormatMessage(err, "get request server success", true, result);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "get request server success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resource:"requestserver", action:"delete"}), function (req, res, next) {
+    var jsonString;
     try {
 
         var data = req.params;
@@ -202,21 +195,18 @@ server.del('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resou
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestserver/remove :: Error: %s #', logkey, err, { request: req.params });
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestserver/remove :: Result: %s #', logkey, result, { request: req.params });
 
-                var jsonString = messageFormatter.FormatMessage(err, "delete requesr server success", true, undefined);
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                jsonString = messageFormatter.FormatMessage(undefined, "delete requesr server success", true, undefined);
                 res.end(result);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -224,6 +214,7 @@ server.del('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resou
 
 
 server.post('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -238,34 +229,31 @@ server.post('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"reques
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/add :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- requestmeta/add :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/add :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add request metadata success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request metadata success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/add :: Result: %s #', logkey, 'false', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add request metadata failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request metadata failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -280,34 +268,31 @@ server.put('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"request
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/set :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- requestmeta/set :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/set :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update request metadata success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update request metadata success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/set :: Result: %s #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update request metadata failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update request metadata failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authorization({resource:"requestmeta", action:"read"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -321,27 +306,25 @@ server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authori
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestmeta/get :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/get :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "get request metadata success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get request metadata success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"requestmeta", action:"read"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -355,27 +338,25 @@ server.get('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"request
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestmeta/get :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/get :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "get request metadata success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get request metadata success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authorization({resource:"requestmeta", action:"delete"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -389,21 +370,18 @@ server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authori
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- requestmeta/remove :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- requestmeta/remove :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "delete request metadata success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "delete request metadata success", true, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -411,6 +389,7 @@ server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authori
 
 
 server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -426,34 +405,31 @@ server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresou
                 infoLogger.ReqResLogger.log('info', '%s End- resource/add :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- resource/add :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/add :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add resource info success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add resource info success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/add :: Result: %s #', logkey, 'false', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add resource info failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add resource info failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = parseInt(req.user.company);
         var tenant = parseInt(req.user.tenant);
@@ -468,34 +444,31 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
                 infoLogger.ReqResLogger.log('info', '%s End- resource/set :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- resource/set :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/set :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update resource info success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update resource info success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/set :: Result: %s #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update resource info failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update resource info failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -511,34 +484,31 @@ server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ards
                 infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- resource/share :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "share resource info success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "share resource info success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/share :: Result: %s #', logkey, 'false', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "share resource info failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                var jsonString = messageFormatter.FormatMessage(undefined, "share resource info failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing/:handlingType',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -553,27 +523,25 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing/:handling
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/removesSharing :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/removesSharing :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "delete resource info success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "delete resource info success", true, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -588,27 +556,25 @@ server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category',authorizatio
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/searchbytag :: Error: %s #', logkey, err);
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/searchbytag :: Result: %j #', logkey, result);
 
-                var jsonString = messageFormatter.FormatMessage(err, "get resource info success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get resource info success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -622,28 +588,26 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/get :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/get :: Result: %s :: Vid: %d #', logkey, result, vid, {request: req.params});
                 var resData = {obj: result, vid: vid};
 
-                var jsonString = messageFormatter.FormatMessage(err, "get resource info success", true, resData);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get resource info success", true, resData);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -658,27 +622,25 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/remove :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/remove :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "delete resource info success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "delete resource info success", true, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -694,15 +656,13 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', '%s End- resource/cs/update :: Result: %j #', logkey, result, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update concurrency slot state success", true, undefined);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update concurrency slot state success", true, undefined);
                         res.end(jsonString);
                     }
                 });
@@ -713,15 +673,13 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', '%s End- resource/cs/update :: Result: %j #', logkey, result, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update concurrency slot state success", true, undefined);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update concurrency slot state success", true, undefined);
                         res.end(jsonString);
                     }
                 });
@@ -732,34 +690,31 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', 'End- resource/cs/update :: Error: %s #', err, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', 'End- resource/cs/update :: Result: %j #', result, {request: req.body});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update concurrency slot state success", true, undefined);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update concurrency slot state success", true, undefined);
                         res.end(jsonString);
                     }
                 });
                 break;
             default :
-                var jsonString = messageFormatter.FormatMessage(new Error("Invalid Request State"), "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(new Error("Invalid Request State"), "ERROR", false, undefined);
                 res.end(jsonString);
                 break;
         }
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         authHandler.ValidateAuthToken(req, function (err, company, tenant) {
             if (err != null) {
@@ -782,28 +737,26 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
                 if (err != null) {
                     infoLogger.ReqResLogger.log('error', 'End- resource/cs/updatebysessionid :: Error: %s #', err, {request: req.body});
 
-                    var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                    res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                    jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                     res.end(jsonString);
                 }
                 else {
                     infoLogger.ReqResLogger.log('info', 'End- resource/cs/updatebysessionid :: Result: %j #', result, {request: req.body});
 
-                    var jsonString = messageFormatter.FormatMessage(err, "update concurrency slot state success", true, undefined);
-                    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                    jsonString = messageFormatter.FormatMessage(undefined, "update concurrency slot state success", true, undefined);
                     res.end(jsonString);
                 }
             });
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:reason',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+   var jsonString;
     try {
         var Company = parseInt(req.user.company);
         var Tenant = parseInt(req.user.tenant);
@@ -817,21 +770,18 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/state/push :: Result: %j #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update resource state success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update resource state success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -878,6 +828,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
  });
  */
 server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({resource:"ardsresource", action:"read"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -892,20 +843,17 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({re
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/get :: Error: %s #', logkey, err, {request: req.body});
 
                 var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- resource/state/get :: Result: %j #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "get resource state success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get resource state success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -913,6 +861,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({re
 
 
 server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -927,34 +876,31 @@ server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsreques
                 infoLogger.ReqResLogger.log('info', '%s End- request/add :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- request/add :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result == null) {
                 infoLogger.ReqResLogger.log('info', '%s End- request/add :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add request failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request failed", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/add :: Result: %s #', logkey, 'false', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "add request success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -969,34 +915,31 @@ server.put('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest
                 infoLogger.ReqResLogger.log('info', '%s End- request/set :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- request/set :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
                 infoLogger.ReqResLogger.log('info', '%s End- request/set :: Result: %s #', logkey, 'true', {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update request success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update request success", true, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/set :: Result: %s #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "update request failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "update request failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType',authorization({resource:"ardsrequest", action:"read"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -1010,27 +953,25 @@ server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType',authorizati
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- request/searchbytag :: Error: %s #', logkey, err, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/searchbytag :: Result: %j #', logkey, result, {request: req.body});
 
-                var jsonString = messageFormatter.FormatMessage(err, "get request info success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get request info success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.get('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"ardsrequest", action:"read"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -1044,27 +985,25 @@ server.get('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- request/get :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/get :: Result: %s :: Vid: %d #', logkey, result, vid, {request: req.params});
                 var resData = {obj: JSON.parse(result), vid: vid};
-                var jsonString = messageFormatter.FormatMessage(err, "get request info success", true, resData);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "get request info success", true, resData);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/request/:sessionid/:reason',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -1078,28 +1017,26 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/:reason',authorization({re
         requestHandler.RemoveRequest(logkey, company, tenant, data["sessionid"],data["reason"], function (err, result) {
             if (err) {
                 infoLogger.ReqResLogger.log('error', '%s End- request/remove :: Error: %s #', logkey, err, {request: req.params});
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, result);
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, result);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/remove :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "delete request success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "delete request success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason',authorization({resource:"ardsrequest", action:"delete"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -1114,27 +1051,25 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason',authorizat
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- request/reject :: Error: %s #', logkey, err, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "ERROE", false, result);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROE", false, result);
                 res.end(jsonString);
             }
             else {
                 infoLogger.ReqResLogger.log('info', '%s End- request/reject :: Result: %s #', logkey, result, {request: req.params});
                 console.log(result);
-                var jsonString = messageFormatter.FormatMessage(err, "reject requetst success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "reject requetst success", true, result);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -1150,15 +1085,13 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- request/state/update/na :: Error: %s #', logkey, err, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', '%s End- request/state/update/na :: Result: %s #', logkey, result, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update request State success", true, result);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update request State success", true, result);
                         res.end(jsonString);
                     }
                 });
@@ -1168,15 +1101,13 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- request/state/update/queued :: Error: %s #', logkey, err, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', '%s End- request/state/update/queued :: Result: %s #', logkey, result, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update request State success", true, result);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update request State success", true, result);
                         res.end(jsonString);
                     }
                 });
@@ -1186,15 +1117,13 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- request/state/update/trying :: Error: %s #', logkey, err, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                         res.end(jsonString);
                     }
                     else {
                         infoLogger.ReqResLogger.log('info', '%s End- request/state/update/trying :: Result: %s #', logkey, result, {request: req.params});
 
-                        var jsonString = messageFormatter.FormatMessage(err, "update request State success", true, result);
-                        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                        jsonString = messageFormatter.FormatMessage(undefined, "update request State success", true, result);
                         res.end(jsonString);
                     }
                 });
@@ -1202,14 +1131,12 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
             default:
                 infoLogger.ReqResLogger.log('info', '%s End- invalied state :: Result: %s #', logkey, result, {request: req.params});
 
-                var jsonString = messageFormatter.FormatMessage(err, "Invalied State", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                var jsonString = messageFormatter.FormatMessage(undefined, "Invalied State", false, undefined);
                 res.end(jsonString);
                 break;
         }
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -1218,6 +1145,7 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
 
 
 server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -1225,18 +1153,15 @@ server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ar
         continueArdsHandler.ContinueArds(req.body, function (err, result) {
             if(err){
                 console.log("END======================================:: "+ Date.now());
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
                 res.end();
             }else {
                 console.log("END======================================:: "+ Date.now());
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
                 //var resultS = JSON.stringify(result);
                 res.end();
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
@@ -1245,6 +1170,7 @@ server.post('/DVP/API/:version/ARDS/continueprocess',authorization({resource:"ar
 
 
 server.post('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -1254,30 +1180,27 @@ server.post('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", acti
 
         reqQueueHandler.AddRequestToQueue(logkey, req.body, function (err, result) {
             if (err) {
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
-                var jsonString = messageFormatter.FormatMessage(err, "add request to queue success ", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request to queue success ", true, undefined);
                 res.end(jsonString);
             }
             else {
-                var jsonString = messageFormatter.FormatMessage(err, "add request to queue failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "add request to queue failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.put('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -1287,30 +1210,27 @@ server.put('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", actio
 
         reqQueueHandler.ReAddRequestToQueue(logkey, req.body, function (err, result) {
             if (err) {
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else if (result === "OK") {
-                var jsonString = messageFormatter.FormatMessage(err, "readd request to queue success", true, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "readd request to queue success", true, undefined);
                 res.end(jsonString);
             }
             else {
-                var jsonString = messageFormatter.FormatMessage(err, "readd request to queue failed", false, undefined);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "readd request to queue failed", false, undefined);
                 res.end(jsonString);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
@@ -1320,18 +1240,17 @@ server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:proces
 
         //reqQueueHandler.SetNextProcessingItem(logkey, req.params["queueid"], req.params["processinghashid"]);
 
-        var jsonString = messageFormatter.FormatMessage(undefined, "method depricated", false, undefined);
-        res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+        jsonString = messageFormatter.FormatMessage(undefined, "method depricated", false, undefined);
         res.end(jsonString);
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
 });
 
 server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
+    var jsonString;
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
@@ -1341,19 +1260,16 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({res
 
         reqQueueHandler.RemoveRequestFromQueue(logkey, company, tenant, data["queueId"], data["sessionId"], function (err, result) {
             if (err) {
-                var jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
-                res.writeHead(500, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
             else {
-                var jsonString = messageFormatter.FormatMessage(err, "delete request from queue success", true, result);
-                res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+                jsonString = messageFormatter.FormatMessage(undefined, "delete request from queue success", true, result);
                 res.end(result);
             }
         });
     } catch (ex2) {
-        var jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
