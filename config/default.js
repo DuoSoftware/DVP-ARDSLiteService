@@ -22,7 +22,8 @@
 		"LBPort":"8828",
 	    "Ip": "127.0.0.1",
 	    "Port": "8828",
-	    "Version": "1.0.0.0"
+	    "Version": "1.0.0.0",
+		"UseMsgQueue": "HOST_USE_MSG_QUEUE"
 	},
 	"DB": {
 	    "Type": "postgres",
