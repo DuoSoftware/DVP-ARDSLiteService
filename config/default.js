@@ -16,7 +16,7 @@
 		"notificationServiceHost": "notificationservice.app.veery.cloud",
 		"notificationServicePort": "8831",
 		"notificationServiceVersion": "1.0.0.0",
-		"ardsMonitoringServiceHost": "ardsmonitoring.app.veery.cloud",
+		"ardsMonitoringServiceHost": "ardsmonitoring.app.veery.cloud",//ardsmonitoring.app.veery.cloud
 		"ardsMonitoringServicePort": "2225",
 		"ardsMonitoringServiceVersion": "1.0.0.0"
 	},
