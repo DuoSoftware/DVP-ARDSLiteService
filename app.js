@@ -1275,6 +1275,24 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({res
     return next();
 });
 
+//-------------------- Notifications --------------------- \\
+
+server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
+    try {
+
+        scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName);
+
+        jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
+        res.end(jsonString);
+    } catch (ex2) {
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.end(jsonString);
+    }
+    return next();
+});
+
+//-------------------- Notifications --------------------- \\
 
 server.listen(hostPort, function () {
     console.log('%s listening at %s', server.name, server.url);
