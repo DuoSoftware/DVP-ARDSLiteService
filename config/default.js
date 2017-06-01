@@ -18,7 +18,10 @@
 		"notificationServiceVersion": "1.0.0.0",
 		"ardsMonitoringServiceHost": "ardsmonitoring.app.veery.cloud",//ardsmonitoring.app.veery.cloud
 		"ardsMonitoringServicePort": "2225",
-		"ardsMonitoringServiceVersion": "1.0.0.0"
+		"ardsMonitoringServiceVersion": "1.0.0.0",
+		"cronurl": "scheduleworker.app.veery.cloud",//ardsmonitoring.app.veery.cloud
+		"cronport": "2225",
+		"cronversion": "1.0.0.0"
 	},
 	"Host": {
 		"LBIP":"127.0.0.1",
