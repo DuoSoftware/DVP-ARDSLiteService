@@ -17,7 +17,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
-var scheduleWorkerHandler = require('dvp-ardscommon/services/ScheduleWorkerHandler');
+var scheduleWorkerHandler = require('dvp-ardscommon/ScheduleWorkerHandler');
 
 var server = restify.createServer({
     name: 'ArdsServer',
