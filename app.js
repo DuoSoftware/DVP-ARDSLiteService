@@ -18,6 +18,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
+var scheduleWorkerHandler = require('dvp-ardscommon/services/ScheduleWorkerHandler');
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -767,7 +768,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, {request: req.params});
-        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.params["state"], req.params["reason"], function (err, result) {
+        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.user.iss, req.params["state"], req.params["reason"], function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 

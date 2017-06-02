@@ -12,6 +12,7 @@
     "request": "^2.79.0",
     "restify": "^4.0.3",
     "restify-jwt": "^0.4.0",
+    "stringformat": "0.0.5",
     "stringify": "^3.2.0"
   },
   "devDependencies": {},
