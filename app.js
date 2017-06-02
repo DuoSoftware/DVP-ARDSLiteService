@@ -17,6 +17,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
+var scheduleWorkerHandler = require('dvp-ardscommon/services/ScheduleWorkerHandler');
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -766,7 +767,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, {request: req.params});
-        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.params["state"], req.params["reason"], function (err, result) {
+        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.user.iss, req.params["state"], req.params["reason"], function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 
@@ -1275,6 +1276,24 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({res
     return next();
 });
 
+//-------------------- Notifications --------------------- \\
+
+server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
+    try {
+
+        scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName);
+
+        jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
+        res.end(jsonString);
+    } catch (ex2) {
+        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        res.end(jsonString);
+    }
+    return next();
+});
+
+//-------------------- Notifications --------------------- \\
 
 server.listen(hostPort, function () {
     console.log('%s listening at %s', server.name, server.url);
