@@ -1295,7 +1295,8 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
             Message: req.body.Message
         };
 
-        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, notificationMsg,uuid.v1());
+        var postData = {message: notificationMsg, From: 'ArdsliteService'};
+        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, postData,uuid.v1());
 
         jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
         res.end(jsonString);
