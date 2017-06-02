@@ -1285,7 +1285,7 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
 
         /*scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName,uuid.v1());*/
 
-        console.log("SendNotificationToRoom - Callback" + req.body);
+        console.log("SendNotificationToRoom - Callback" + JSON.stringify(req.body));
         var notificationMsg = {
             From:req.body.From,
             Direction:req.body.Direction,
