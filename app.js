@@ -10,6 +10,7 @@ var continueArdsHandler = require('./ContinueArdsProcess.js');
 var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var resStateMapper = require('dvp-ardscommon/ResourceStateMapper.js');
 var authHandler = require('dvp-ardscommon/Authorization.js');
+var notificationService = require('dvp-ardscommon/services/notificationService.js');
 var uuid = require('node-uuid');
 var startArds = require('./StartArds.js');
 var config = require('config');
@@ -17,7 +18,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
-var scheduleWorkerHandler = require('dvp-ardscommon/ScheduleWorkerHandler');
+
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -1282,12 +1283,24 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
     var jsonString;
     try {
 
-        scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName);
+        /*scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName,uuid.v1());*/
+
+        console.log("SendNotificationToRoom - Callback" + req.body);
+        var notificationMsg = {
+            From:req.body.From,
+            Direction:req.body.Direction,
+            To:req.params.UserName,
+            ResourceId:req.body.ResourceId,
+            UserName:req.params.UserName,
+            Message: req.body.Message
+        };
+
+        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, notificationMsg,uuid.v1());
 
         jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
         res.end(jsonString);
-    } catch (ex2) {
-        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+    } catch (ex) {
+        jsonString = messageFormatter.FormatMessage(ex, "ERROR", false, undefined);
         res.end(jsonString);
     }
     return next();
