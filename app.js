@@ -671,7 +671,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                 break;
 
             case "Reserved":
-                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
+                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.MaxFreezeTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
