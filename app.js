@@ -1292,7 +1292,8 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
             To:req.params.UserName,
             ResourceId:req.body.ResourceId,
             UserName:req.params.UserName,
-            Message: req.body.Message
+            Message: req.body.Message,
+            SessionId: req.body.SessionID
         };
 
         var postData = {message: notificationMsg, From: 'ArdsliteService'};
