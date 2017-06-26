@@ -10,6 +10,7 @@ var continueArdsHandler = require('./ContinueArdsProcess.js');
 var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var resStateMapper = require('dvp-ardscommon/ResourceStateMapper.js');
 var authHandler = require('dvp-ardscommon/Authorization.js');
+var notificationService = require('dvp-ardscommon/services/notificationService.js');
 var uuid = require('node-uuid');
 var startArds = require('./StartArds.js');
 var config = require('config');
@@ -17,6 +18,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
+
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -669,7 +671,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                 break;
 
             case "Reserved":
-                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
+                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.MaxFreezeTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
                     if (err != null) {
                         infoLogger.ReqResLogger.log('error', '%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
@@ -766,7 +768,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, {request: req.params});
-        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.params["state"], req.params["reason"], function (err, result) {
+        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.user.iss, req.params["state"], req.params["reason"], function (err, result) {
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 
@@ -1275,6 +1277,38 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({res
     return next();
 });
 
+//-------------------- Notifications --------------------- \\
+
+server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+    var jsonString;
+    try {
+
+        /*scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName,uuid.v1());*/
+
+        console.log("SendNotificationToRoom - Callback" + JSON.stringify(req.body));
+        var notificationMsg = {
+            From:req.body.From,
+            Direction:req.body.Direction,
+            To:req.params.UserName,
+            ResourceId:req.body.ResourceId,
+            UserName:req.params.UserName,
+            Message: req.body.Message,
+            SessionId: req.body.SessionID
+        };
+
+        var postData = {message: notificationMsg, From: 'ArdsliteService'};
+        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, postData,uuid.v1());
+
+        jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
+        res.end(jsonString);
+    } catch (ex) {
+        jsonString = messageFormatter.FormatMessage(ex, "ERROR", false, undefined);
+        res.end(jsonString);
+    }
+    return next();
+});
+
+//-------------------- Notifications --------------------- \\
 
 server.listen(hostPort, function () {
     console.log('%s listening at %s', server.name, server.url);

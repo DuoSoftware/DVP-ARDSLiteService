@@ -15,7 +15,13 @@
 		"resourceServiceVersion": "SYS_RESOURCESERVICE_VERSION",
 		"notificationServiceHost": "SYS_NOTIFICATIONSERVICE_HOST",
 		"notificationServicePort": "SYS_NOTIFICATIONSERVICE_PORT",
-		"notificationServiceVersion": "SYS_NOTIFICATIONSERVICE_VERSION"
+		"notificationServiceVersion": "SYS_NOTIFICATIONSERVICE_VERSION",
+		"ardsMonitoringServiceHost": "SYS_ARDSMONITORING_HOST",
+		"ardsMonitoringServicePort": "SYS_ARDSMONITORING_PORT",
+		"ardsMonitoringServiceVersion": "SYS_ARDSMONITORING_VERSION",
+		"cronurl": "SYS_SCHEDULEWORKER_HOST",//ardsmonitoring.app.veery.cloud
+		"cronport": "SYS_SCHEDULEWORKER_PORT",
+		"cronversion": "SYS_SCHEDULEWORKER_VERSION"
 	},
 	"Host": {
 		"LBIP":"LB_FRONTEND",
