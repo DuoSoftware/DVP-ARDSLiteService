@@ -49,6 +49,7 @@
 		"ip": "45.55.142.207",
 		"port": 5672,
 		"user": "guest",
-		"password": "guest"
+		"password": "guest",
+		"vhost":'/'
 	}
 };
