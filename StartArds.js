@@ -1,5 +1,5 @@
 ﻿var util = require('util');
-var redisHandler = require('dvp-ardscommon/RedisHandler.js')
+var redisHandler = require('dvp-ardscommon/RedisHandler.js');
 var sortArray = require('dvp-ardscommon/CommonMethods.js');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var preProcessHandler = require('dvp-ardscommon/PreProcessor.js');
