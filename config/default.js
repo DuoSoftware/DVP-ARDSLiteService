@@ -38,7 +38,7 @@
 	    "Ip": "127.0.0.1",
 	    "Port": "8828",
 	    "Version": "1.0.0.0",
-		"UseMsgQueue": true
+		"UseMsgQueue": 'true'
 	},
 	"DB": {
 	    "Type": "postgres",
