@@ -1,9 +1,18 @@
 ﻿module.exports = {
-	"Redis":{
-		"redisip":"45.55.142.207",
-		"redisport":6389,
-		"redisdb":6,
-		"password":"DuoS123"
+	"Redis":
+	{
+		"mode":"instance",//instance, cluster, sentinel
+		"ip": "45.55.142.207",
+		"port": 6389,
+		"user": "duo",
+		"password": "DuoS123",
+		"db":6,
+		"sentinels":{
+			"hosts": "138.197.90.92,45.55.205.92,138.197.90.92",
+			"port":16389,
+			"name":"redis-cluster"
+		}
+
 	},
 	"Services" : {
 		"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiYWEzOGRmZWYtNDFhOC00MWUyLTgwMzktOTJjZTY0YjM4ZDFmIiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE5MDIzODExMTgsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NzAzODExMTh9.Gmlu00Uj66Fzts-w6qEwNUz46XYGzE8wHUhAJOFtiRo",
@@ -29,7 +38,7 @@
 	    "Ip": "127.0.0.1",
 	    "Port": "8828",
 	    "Version": "1.0.0.0",
-		"UseMsgQueue": true
+		"UseMsgQueue": 'true'
 	},
 	"DB": {
 	    "Type": "postgres",
@@ -39,16 +48,26 @@
 	    "Host": "104.236.231.11",
 	    "Database": "duo"
 	},
-	"Security": {
+	"Security":
+	{
+
 		"ip" : "45.55.142.207",
 		"port": 6389,
-		"password":"DuoS123"
+		"user": "duo",
+		"password": "DuoS123",
+		"mode":"instance",//instance, cluster, sentinel
+		"sentinels":{
+			"hosts": "138.197.90.92,45.55.205.92,138.197.90.92",
+			"port":16389,
+			"name":"redis-cluster"
+		}
 	},
 	"RabbitMQ":
 	{
 		"ip": "45.55.142.207",
 		"port": 5672,
 		"user": "guest",
-		"password": "guest"
+		"password": "guest",
+		"vhost":'/'
 	}
 };
