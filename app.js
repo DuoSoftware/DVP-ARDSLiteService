@@ -718,16 +718,19 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
 server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/:sessionid',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
     var jsonString;
     try {
-        authHandler.ValidateAuthToken(req, function (err, company, tenant) {
-            if (err != null) {
-                throw  err;
-            }
-            req.body.Company = parseInt(company);
-            req.body.Tenant = parseInt(tenant);
+        
+            req.body.Company = req.user.company;
+            req.body.Tenant = req.user.tenant;
             var direction = "inbound";
             if(req.query.direction){
                 direction = req.query.direction;
             }
+        
+        if( req.body.State === "EndFreeze"){
+            
+            req.body.State = "endFreeze"
+        }
+            
 
             var objkey = util.format('%d:%d:Session::%s:res::%s', req.body.Company, req.body.Tenant, req.params["sessionid"], req.params["resourceid"]);
             var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
@@ -749,7 +752,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
                     res.end(jsonString);
                 }
             });
-        });
+        
     } catch (ex2) {
         jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
         res.end(jsonString);
