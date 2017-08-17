@@ -772,7 +772,11 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
             if (err != null) {
                 infoLogger.ReqResLogger.log('error', '%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 
-                jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                if(result){
+                    jsonString = messageFormatter.FormatMessage(undefined, result, false, undefined);
+                }else {
+                    jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
+                }
                 res.end(jsonString);
             }
             else {
