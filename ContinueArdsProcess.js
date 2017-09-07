@@ -48,7 +48,87 @@ var ContinueArds = function (request, callback) {
 
 var DoReplyServing = function (logkey, request, handlingResource, callback) {
     infoLogger.ContArdsLogger.log('info', '%s ContinueArds. SessionId: %s :: SessionId: %s :: handlingResource: %s :: ServingAlgo: %s', logkey, request.SessionId, handlingResource, request.ServingAlgo);
-                
+
+    function startRoute() {
+        var reqSkills = [];
+        for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
+            for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
+                reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
+            }
+        }
+
+        var hrOtherData = JSON.parse(handlingResource);
+        var postDataString = {
+            Company: request.Company.toString(),
+            Tenant: request.Tenant.toString(),
+            ServerType: request.ServerType,
+            RequestType: request.RequestType,
+            SessionID: request.SessionId,
+            Skills: reqSkills.join(),
+            OtherInfo: request.OtherInfo,
+            ResourceInfo: hrOtherData
+        };
+
+
+        if (Array.isArray(hrOtherData)) {
+            var resInfoData = [];
+            for (var i in hrOtherData) {
+                var resData = hrOtherData[i];
+                var resDataObj = JSON.parse(resData);
+                resInfoData.push(resDataObj);
+            }
+            try {
+                postDataString = {
+                    Company: request.Company.toString(),
+                    Tenant: request.Tenant.toString(),
+                    ServerType: request.ServerType,
+                    RequestType: request.RequestType,
+                    SessionID: request.SessionId,
+                    Skills: reqSkills.join(),
+                    OtherInfo: request.OtherInfo,
+                    ResourceInfo: resInfoData
+                };
+            } catch (ex) {
+                console.log(ex);
+            }
+        }
+
+        reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, request.CallbackOption, postDataString, function (result, msg) {
+            if (result) {
+                if (msg == "readdRequired") {
+                    requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Server Return 503.", function (err, result) {
+                        if (err) {
+                            console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                        }
+                        else if ("true") {
+                            console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
+                        }
+                        else {
+                            console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                        }
+                    });
+                }
+                console.log("SendCallBack success. SessionId:: " + request.SessionId);
+                console.log("CallbackFinishedTime: " + new Date().toISOString());
+            }
+            else {
+                console.log("SendCallBack failed. SessionId:: " + request.SessionId);
+                requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Send Callback failed.", function (err, result) {
+                    if (err) {
+                        console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                    }
+                    else if ("true") {
+                        console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
+                    }
+                    else {
+                        console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                    }
+                });
+            }
+        });
+        return postDataString;
+    }
+
     switch (request.ServingAlgo) {
         case "CALLBACK":
             if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
@@ -63,6 +143,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             if (err) {
                                 console.log(err);
                             }
+                            startRoute();
                             console.log("=======================DoReplyServing Done=================================");
                             callback(handlingResource);
                         });
@@ -76,87 +157,12 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         if (err) {
                             console.log(err);
                         }
+                        startRoute();
                         console.log("=======================DoReplyServing Done=================================");
                         callback(handlingResource);
                     });
                 }
 
-                var reqSkills = [];
-                for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
-                    for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
-                        reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
-                    }
-                }
-
-                var hrOtherData = JSON.parse(handlingResource);
-                var postDataString = {
-                    Company: request.Company.toString(),
-                    Tenant: request.Tenant.toString(),
-                    ServerType: request.ServerType,
-                    RequestType: request.RequestType,
-                    SessionID: request.SessionId,
-                    Skills: reqSkills.join(),
-                    OtherInfo: request.OtherInfo,
-                    ResourceInfo: hrOtherData
-                };
-
-
-                if (Array.isArray(hrOtherData)) {
-                    var resInfoData = [];
-                    for (var i in hrOtherData) {
-                        var resData = hrOtherData[i];
-                        var resDataObj = JSON.parse(resData);
-                        resInfoData.push(resDataObj);
-                    }
-                    try {
-                        postDataString = {
-                            Company: request.Company.toString(),
-                            Tenant: request.Tenant.toString(),
-                            ServerType: request.ServerType,
-                            RequestType: request.RequestType,
-                            SessionID: request.SessionId,
-                            Skills: reqSkills.join(),
-                            OtherInfo: request.OtherInfo,
-                            ResourceInfo: resInfoData
-                        };
-                    } catch (ex) {
-                        console.log(ex);
-                    }
-                }
-
-                reqServerHandler.SendCallBack(logkey, request.RequestServerUrl, request.CallbackOption, postDataString, function (result, msg) {
-                    if (result) {
-                        if (msg == "readdRequired") {
-                            requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Server Return 503.", function (err, result) {
-                                if (err) {
-                                    console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
-                                }
-                                else if ("true") {
-                                    console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
-                                }
-                                else {
-                                    console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
-                                }
-                            });
-                        }
-                        console.log("SendCallBack success. SessionId:: " + request.SessionId);
-                        console.log("CallbackFinishedTime: " + new Date().toISOString());
-                    }
-                    else {
-                        console.log("SendCallBack failed. SessionId:: " + request.SessionId);
-                        requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Send Callback failed.", function (err, result) {
-                            if (err) {
-                                console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
-                            }
-                            else if ("true") {
-                                console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
-                            }
-                            else {
-                                console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
-                            }
-                        });
-                    }
-                });
             } else {
                 callback(handlingResource);
             }
