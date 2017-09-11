@@ -38,11 +38,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                         callback(err, null, 0);
                     }
                     else {
-                        requestHandler.SetRequestState(logKey, requestObj.Company, requestObj.Tenant, requestObj.SessionId, "N/A", function (err, result) {
-                            if (err) {
-                                console.log(err);
-                            }
-                        });
+
                         switch (requestObj.ReqHandlingAlgo) {
                             case "QUEUE":
                                 var replyObj = {};
@@ -60,9 +56,15 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                                 });
                                 break;
                             case "DIRECT":
-                                contArdsHandler.ContinueArds(requestObj, function (err, handlingResource) {
-                                    callback(err, handlingResource, vid);
+                                requestHandler.SetRequestState(logKey, requestObj.Company, requestObj.Tenant, requestObj.SessionId, "N/A", function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    contArdsHandler.ContinueArds(requestObj, function (err, handlingResource) {
+                                        callback(err, handlingResource, vid);
+                                    });
                                 });
+
                                 break;
                             default:
                                 callback(err, "No ReqHandlingAlgo Found.", vid);
