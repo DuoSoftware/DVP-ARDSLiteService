@@ -1258,7 +1258,7 @@ server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:proces
     return next();
 });
 
-server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
+server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId/:requestType/:reason',authorization({resource:"queue", action:"delete"}), function (req, res, next) {
     var jsonString;
     try {
         var company = req.user.company;
@@ -1267,7 +1267,7 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId',authorization({res
         var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionId"]);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
 
-        reqQueueHandler.RemoveRequestFromQueue(logkey, company, tenant, data["queueId"], data["sessionId"], function (err, result) {
+        reqQueueHandler.RemoveRequestFromQueue(logkey, company, tenant, data["queueId"], data["sessionId"], data["requestType"], data["reason"], function (err, result) {
             if (err) {
                 jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
