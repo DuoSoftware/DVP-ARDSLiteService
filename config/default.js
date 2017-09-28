@@ -19,7 +19,7 @@
 		"routingServiceHost": "127.0.0.1",
 		"routingServicePort": "2223",
 		"routingServiceVersion": "1.0.0.0",
-		"resourceServiceHost": "127.0.0.1",
+		"resourceServiceHost": "resourceservice.app.veery.cloud",
 		"resourceServicePort": "8832",
 		"resourceServiceVersion": "1.0.0.0",
 		"notificationServiceHost": "notificationservice.app.veery.cloud",
