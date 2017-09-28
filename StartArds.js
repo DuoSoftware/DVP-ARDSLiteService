@@ -12,6 +12,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
         preProcessHandler.execute(logKey, reqPreObj, function (err, requestObj) {
             if (err) {
                 console.log(err);
+                callback(err, null, 0);
             }
             else {
                 infoLogger.DetailLogger.log('info', '%s ************************* Start AddRequest *************************', logKey);
@@ -76,6 +77,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
         });
     }catch (ex2) {
         console.log(ex2)
+        callback(ex2, null, 0);
     }
 };
 
