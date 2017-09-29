@@ -46,12 +46,12 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                                 reqQueueHandler.AddRequestToQueue(logKey, requestObj, function (err, result, qPosition) {
                                     if (err) {
                                         console.log(err);
-                                        replyObj = {Position: qPosition, Message: "Add Request to Queue Failed. sessionId :: " + requestObj.SessionId};
+                                        replyObj = {Position: qPosition, QueueName: requestObj.QueueName, Message: "Add Request to Queue Failed. sessionId :: " + requestObj.SessionId};
                                         callback(err, replyObj, vid);
                                     }
                                     else {
                                         console.log("Request added to queue. sessionId :: " + requestObj.SessionId);
-                                        replyObj = {Position: qPosition, Message: "Request added to queue. sessionId :: " + requestObj.SessionId};
+                                        replyObj = {Position: qPosition, QueueName: requestObj.QueueName, Message: "Request added to queue. sessionId :: " + requestObj.SessionId};
                                         callback(err, replyObj, vid);
                                     }
                                 });
@@ -76,7 +76,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
             }
         });
     }catch (ex2) {
-        console.log(ex2)
+        console.log(ex2);
         callback(ex2, null, 0);
     }
 };
