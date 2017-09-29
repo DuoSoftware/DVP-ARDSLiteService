@@ -190,7 +190,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
-                    Skills: reqSkills.join(),
+                    Skills: request.QueueName,
                     OtherInfo: request.OtherInfo,
                     ResourceInfo: hrOtherData
                 };
@@ -210,7 +210,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
-                            Skills: reqSkills.join(),
+                            Skills: request.QueueName,
                             OtherInfo: request.OtherInfo,
                             ResourceInfo: resInfoData
                         };
@@ -227,7 +227,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
-                    Skills: reqSkills.join(),
+                    Skills: request.QueueName,
                     OtherInfo: request.OtherInfo,
                     ResourceInfo: undefined
                 };
