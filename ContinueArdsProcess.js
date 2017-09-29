@@ -50,12 +50,12 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
     infoLogger.ContArdsLogger.log('info', '%s ContinueArds. SessionId: %s :: SessionId: %s :: handlingResource: %s :: ServingAlgo: %s', logkey, request.SessionId, handlingResource, request.ServingAlgo);
 
     function startRoute() {
-        var reqSkills = [];
-        for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
-            for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
-                reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
-            }
-        }
+        //var reqSkills = [];
+        //for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
+        //    for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
+        //        reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
+        //    }
+        //}
 
         var hrOtherData = JSON.parse(handlingResource);
         var postDataString = {
@@ -64,7 +64,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             ServerType: request.ServerType,
             RequestType: request.RequestType,
             SessionID: request.SessionId,
-            Skills: reqSkills.join(),
+            Skills: request.QueueName,
             OtherInfo: request.OtherInfo,
             ResourceInfo: hrOtherData
         };
@@ -84,7 +84,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
-                    Skills: reqSkills.join(),
+                    Skills: request.QueueName,
                     OtherInfo: request.OtherInfo,
                     ResourceInfo: resInfoData
                 };
@@ -173,12 +173,12 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
             var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
             console.log(result);
 
-            var reqSkills = [];
-            for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
-                for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
-                    reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
-                }
-            }
+            //var reqSkills = [];
+            //for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
+            //    for (var j = request.AttributeInfo[i].AttributeNames.length - 1; j >= 0; j--) {
+            //        reqSkills.push(request.AttributeInfo[i].AttributeNames[j]);
+            //    }
+            //}
 
             if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
 
