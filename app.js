@@ -887,7 +887,7 @@ server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsreques
             if (err) {
                 infoLogger.ReqResLogger.log('info', '%s End- request/add :: Result: %s #', logkey, 'false', {request: req.body});
                 infoLogger.ReqResLogger.log('error', '%s End- request/add :: Error: %s #', logkey, err, {request: req.body});
-
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
                 jsonString = messageFormatter.FormatMessage(err, "ERROR", false, undefined);
                 res.end(jsonString);
             }
