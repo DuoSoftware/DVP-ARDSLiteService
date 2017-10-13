@@ -880,6 +880,9 @@ server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsreques
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/add #', logkey, {request: req.body});
+
+        req.body.Attributes = [];
+
         startArds.AddRequest(logkey, req.body, function (err, result, vid) {
             if (err) {
                 infoLogger.ReqResLogger.log('info', '%s End- request/add :: Result: %s #', logkey, 'false', {request: req.body});
