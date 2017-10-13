@@ -872,7 +872,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({re
 server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest", action:"write"}), function (req, res, next) {
     var jsonString;
     try {
-        //req.body.Company = parseInt(req.user.company);
+        req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
@@ -880,8 +880,6 @@ server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsreques
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/add #', logkey, {request: req.body});
-
-        req.body.Attributes = [];
 
         startArds.AddRequest(logkey, req.body, function (err, result, vid) {
             if (err) {
