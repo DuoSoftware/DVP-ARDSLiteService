@@ -20,7 +20,7 @@
 		"routingServicePort": "2223",
 		"routingServiceVersion": "1.0.0.0",
 		"resourceServiceHost": "resourceservice.app.veery.cloud",
-		"resourceServicePort": "8831",
+		"resourceServicePort": "8832",
 		"resourceServiceVersion": "1.0.0.0",
 		"notificationServiceHost": "notificationservice.app.veery.cloud",
 		"notificationServicePort": "8831",
@@ -38,7 +38,7 @@
 	    "Ip": "127.0.0.1",
 	    "Port": "8828",
 	    "Version": "1.0.0.0",
-		"UseMsgQueue": 'true'
+		"UseMsgQueue": 'false'
 	},
 	"DB": {
 	    "Type": "postgres",
