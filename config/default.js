@@ -39,7 +39,7 @@
 	    "Port": "8828",
 	    "Version": "1.0.0.0",
 		"UseMsgQueue": 'false',
-		"UseDashboardMsgQueue": 'true'
+		"UseDashboardMsgQueue": 'false'
 	},
 	"DB": {
 	    "Type": "postgres",
