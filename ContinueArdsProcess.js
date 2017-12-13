@@ -137,7 +137,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
 
 
                 if (request.ReqHandlingAlgo == "QUEUE") {
-                    var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
+                    var pHashId = util.format('ProcessingHash:%d:%d:%s', request.Company, request.Tenant, request.RequestType);
                     reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
                         requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                             if (err) {
