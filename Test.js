@@ -137,9 +137,104 @@
 //infoLogger.debug('HelloWorld');
 
 
-var uuid = require('node-uuid');
-var util = require('util');
+// var uuid = require('node-uuid');
+// var util = require('util');
+//
+// var key = util.format('[%s]::[%s]', uuid.v1(), uuid.v1());
+//
+// console.log(key);
 
-var key = util.format('[%s]::[%s]', uuid.v1(), uuid.v1());
-            
-console.log(key);
+var request = require('./StartArds');
+var async = require('async');
+var uuid = require('node-uuid');
+
+var requestAdd = function () {
+
+    try{
+
+        var requestArray = [
+            function (callback) {
+                var session = uuid.v1();
+
+                var preRequest = {
+                    Tenant: 1,
+                    Company: 103,
+                    ServerType:"CALLSERVER",
+                    RequestType:"CALL",
+                    SessionId:session,
+                    Attributes:["61"],
+                    RequestServerId:"1",
+                    Priority:"0",
+                    ResourceCount:1,
+                    OtherInfo:""
+                };
+
+                request.AddRequest('Log:'+session, preRequest, function (err, replyObj, vid) {
+                    callback(err, replyObj, vid);
+                });
+            },
+            function (callback) {
+                var session = uuid.v1();
+
+                var preRequest = {
+                    Tenant: 1,
+                    Company: 103,
+                    ServerType:"CALLSERVER",
+                    RequestType:"CALL",
+                    SessionId:session,
+                    Attributes:["61"],
+                    RequestServerId:"1",
+                    Priority:"0",
+                    ResourceCount:1,
+                    OtherInfo:""
+                };
+
+                request.AddRequest('Log:'+session, preRequest, function (err, replyObj, vid) {
+                    callback(err, replyObj, vid);
+                });
+            },
+            function (callback) {
+                var session = uuid.v1();
+
+                var preRequest = {
+                    Tenant: 1,
+                    Company: 103,
+                    ServerType:"CALLSERVER",
+                    RequestType:"CALL",
+                    SessionId:session,
+                    Attributes:["61"],
+                    RequestServerId:"1",
+                    Priority:"0",
+                    ResourceCount:1,
+                    OtherInfo:""
+                };
+
+                request.AddRequest('Log:'+session, preRequest, function (err, replyObj, vid) {
+                    callback(err, replyObj);
+                });
+            }
+        ];
+
+        async.parallel(requestArray, function (err, results) {
+
+            if(err){
+                console.log(err);
+            }else {
+                results.forEach(function (result) {
+
+                    console.log(JSON.stringify(result.replyObj));
+
+                });
+            }
+
+        });
+        
+        
+    }catch (ex){
+
+        console.log(ex);
+    }
+
+};
+
+requestAdd();
