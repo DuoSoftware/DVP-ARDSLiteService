@@ -7,7 +7,7 @@
     "async": "^2.6.0",
     "config": "^1.19.0",
     "dvp-ardscommon": "1.9.0",
-    "dvp-common": "^0.8.4",
+    "dvp-common": "1.1.0",
     "lodash": "^4.2.1",
     "node-uuid": "^1.4.7",
     "request": "^2.79.0",
