@@ -5,6 +5,7 @@ var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
 var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var uuid = require('node-uuid');
+var redisHandler = require('dvp-ardscommon/RedisHandler');
 
 var ContinueArds = function (request, callback) {
     var logkey = util.format('[%s]::[%s]', uuid.v1(), request.SessionId);
@@ -137,15 +138,26 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
 
 
                 if (request.ReqHandlingAlgo == "QUEUE") {
-                    var pHashId = util.format('ProcessingHash:%d:%d', request.Company, request.Tenant);
-                    reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
-                        requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
-                            if (err) {
-                                console.log(err);
-                            }
-                            startRoute();
-                            console.log("=======================DoReplyServing Done=================================");
-                            callback(handlingResource);
+                    var pHashId = util.format('ProcessingHash:%d:%d:%s', request.Company, request.Tenant, request.RequestType);
+                    var redLokKey = util.format('lock:%s:%s', pHashId, request.QueueId);
+
+                    redisHandler.RLock.lock(redLokKey, 500).then(function(lock) {
+                        reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
+
+                            lock.unlock()
+                                .catch(function (err) {
+                                    console.error(err);
+                                });
+
+                            requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                                startRoute();
+                                console.log("=======================DoReplyServing Done=================================");
+                                callback(handlingResource);
+                            });
+
                         });
                     });
                     if (request.QPositionEnable) {
