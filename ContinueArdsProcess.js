@@ -62,6 +62,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
         var postDataString = {
             Company: request.Company.toString(),
             Tenant: request.Tenant.toString(),
+            BusinessUnit: request.BusinessUnit,
             ServerType: request.ServerType,
             RequestType: request.RequestType,
             SessionID: request.SessionId,
@@ -82,6 +83,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 postDataString = {
                     Company: request.Company.toString(),
                     Tenant: request.Tenant.toString(),
+                    BusinessUnit: request.BusinessUnit,
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
@@ -199,6 +201,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 var postDataString = {
                     Company: request.Company.toString(),
                     Tenant: request.Tenant.toString(),
+                    BusinessUnit: request.BusinessUnit,
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
@@ -219,6 +222,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                         postDataString = {
                             Company: request.Company.toString(),
                             Tenant: request.Tenant.toString(),
+                            BusinessUnit: request.BusinessUnit,
                             ServerType: request.ServerType,
                             RequestType: request.RequestType,
                             SessionID: request.SessionId,
@@ -236,6 +240,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 postDataString = {
                     Company: request.Company.toString(),
                     Tenant: request.Tenant.toString(),
+                    BusinessUnit: request.BusinessUnit,
                     ServerType: request.ServerType,
                     RequestType: request.RequestType,
                     SessionID: request.SessionId,
