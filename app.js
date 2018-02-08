@@ -1238,21 +1238,34 @@ server.put('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", actio
     return next();
 });
 
-server.post('/DVP/API/:version/ARDS/queue/:queueid/setnextprocessingitem/:processinghashid',authorization({resource:"queue", action:"write"}), function (req, res, next) {
+server.put('/DVP/API/:version/ARDS/queue/setNextProcessingItem',authorization({resource:"queue", action:"write"}), function (req, res, next) {
     var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
         req.body.Tenant = parseInt(req.user.tenant);
 
-        var objkey = util.format('QueueId:%s', req.params["queueid"]);
+        var objkey = util.format('QueueId:%s', req.body.QueueId);
         var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
 
-        //reqQueueHandler.SetNextProcessingItem(logkey, req.params["queueid"], req.params["processinghashid"]);
+        infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
+        infoLogger.ReqResLogger.log('info', '%s Start- request/remove #', logkey, {request: req.body});
 
-        jsonString = messageFormatter.FormatMessage(undefined, "method depricated", false, undefined);
-        res.end(jsonString);
+        if(req.body.QueueId && req.body.ProcessingHashId && req.body.CurrentSession) {
+            reqQueueHandler.SetNextProcessingItem(logkey, req.body.QueueId, req.body.ProcessingHashId, req.body.CurrentSession, function (result) {
+                jsonString = messageFormatter.FormatMessage(undefined, "Execute SetNextProcessingItem Success", true, undefined);
+                infoLogger.ReqResLogger.log('info', '%s End- queue/SetNextProcessingItem :: Result: %s #', logkey, result, {request: req.body});
+                res.end(jsonString);
+            });
+        }else{
+            jsonString = messageFormatter.FormatMessage(undefined, "Execute SetNextProcessingItem: Not enough data process", false, undefined);
+            infoLogger.ReqResLogger.log('info', '%s End- queue/SetNextProcessingItem :: Result: Not enough data process #', logkey, result, {request: req.body});
+            res.end(jsonString);
+        }
+
+
     } catch (ex2) {
-        jsonString = messageFormatter.FormatMessage(ex2, "ERROR", false, undefined);
+        jsonString = messageFormatter.FormatMessage(ex2, "Execute SetNextProcessingItem Failed", false, undefined);
+        infoLogger.ReqResLogger.log('info', '%s End- queue/SetNextProcessingItem :: Result: Failed #', logkey, result, {request: req.body});
         res.end(jsonString);
     }
     return next();
