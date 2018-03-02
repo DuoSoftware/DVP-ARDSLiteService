@@ -1,12 +1,12 @@
 {
   "name": "dvp-ardsliteservice",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "app.js",
   "dependencies": {
     "async": "^2.6.0",
     "config": "^1.19.0",
-    "dvp-ardscommon": "2.0.0",
+    "dvp-ardscommon": "2.1.6",
     "dvp-common": "1.1.0",
     "lodash": "^4.2.1",
     "node-uuid": "^1.4.7",
