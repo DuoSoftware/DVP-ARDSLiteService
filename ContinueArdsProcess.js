@@ -4,11 +4,11 @@ var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
 var infoLogger = require('dvp-ardscommon/InformationLogger.js');
-var uuid = require('node-uuid');
+var uuid = require('uuid/v4');
 var redisHandler = require('dvp-ardscommon/RedisHandler');
 
 var ContinueArds = function (request, callback) {
-    var logkey = util.format('[%s]::[%s]', uuid.v1(), request.SessionId);
+    var logkey = util.format('[%s]::[%s]', uuid(), request.SessionId);
     infoLogger.ContArdsLogger.log('info', '%s ************************* Start ContinueArds *************************', logkey);
 
     var selectionResult = "";
@@ -141,15 +141,15 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
 
                 if (request.ReqHandlingAlgo == "QUEUE") {
                     var pHashId = util.format('ProcessingHash:%d:%d:%s', request.Company, request.Tenant, request.RequestType);
-                    var redLokKey = util.format('lock:%s:%s', pHashId, request.QueueId);
+                    //var redLokKey = util.format('lock:%s:%s', pHashId, request.QueueId);
 
-                    redisHandler.RLock.lock(redLokKey, 500).then(function(lock) {
+                    //redisHandler.RLock.lock(redLokKey, 500).then(function(lock) {
                         reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
 
-                            lock.unlock()
-                                .catch(function (err) {
-                                    console.error(err);
-                                });
+                            // lock.unlock()
+                            //     .catch(function (err) {
+                            //         console.error(err);
+                            //     });
 
                             requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                                 if (err) {
@@ -161,7 +161,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             });
 
                         });
-                    });
+                    //});
                     if (request.QPositionEnable) {
                         reqQueueHandler.SendQueuePositionInfo(logkey, request.QPositionUrl, request.QueueId, request.CallbackOption, function () {
                         });

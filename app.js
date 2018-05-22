@@ -11,7 +11,7 @@ var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var resStateMapper = require('dvp-ardscommon/ResourceStateMapper.js');
 var authHandler = require('dvp-ardscommon/Authorization.js');
 var notificationService = require('dvp-ardscommon/services/notificationService.js');
-var uuid = require('node-uuid');
+var uuid = require('uuid/v4');
 var startArds = require('./StartArds.js');
 var config = require('config');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
@@ -46,7 +46,7 @@ server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requ
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('ReqServer:%s:%s:%s', "*", "*", req.body.ServerID);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestserver/add #', logkey, { request: req.body });
@@ -90,7 +90,7 @@ server.put('/DVP/API/:version/ARDS/requestserver',authorization({resource:"reque
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('ReqServer:%d:%d:%s', "*", "*", req.body.ServerID);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestserver/set #', logkey, { request: req.body });
@@ -127,7 +127,7 @@ server.get('/DVP/API/:version/ARDS/requestservers/:serverType/:requestType',auth
     var jsonString;
     try {
 
-        var logkey = util.format('[%s]::requestserver-searchbytag', uuid.v1());
+        var logkey = util.format('[%s]::requestserver-searchbytag', uuid());
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestserver/searchbytag #', logkey, { request: req.params });
 
@@ -159,7 +159,7 @@ server.get('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resou
 
         var data = req.params;
         var objkey = util.format('ReqServer:%s:%s:%s', "*", "*", data["serverid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestserver/get #', logkey, { request: req.params });
@@ -188,7 +188,7 @@ server.del('/DVP/API/:version/ARDS/requestserver/:serverid',authorization({resou
 
         var data = req.params;
         var objkey = util.format('ReqServer:%s:%s:%s', "*", "*", data["serverid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestserver/remove #', logkey, { request: req.params });
@@ -222,7 +222,7 @@ server.post('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"reques
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('ReqMETA:%d:%d:%s:%s', req.body.Company, req.body.Tenant, req.body.ServerType, req.body.RequestType);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/add #', logkey, {request: req.body});
@@ -261,7 +261,7 @@ server.put('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"request
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('ReqMETA:%d:%d:%s:%s', req.body.Company, req.body.Tenant, req.body.ServerType, req.body.RequestType);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/set #', logkey, {request: req.body});
@@ -300,7 +300,7 @@ server.get('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authori
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/get #', logkey, {request: req.params});
@@ -332,7 +332,7 @@ server.get('/DVP/API/:version/ARDS/requestmeta',authorization({resource:"request
         var tenant = req.user.tenant;
         var data = req.params;
         var tags = ["company_" + company, "tenant_" + tenant, "serverType_*", "requestType_*"];
-        var logkey = util.format('[%s]::requestmeta-searchbytag', uuid.v1());
+        var logkey = util.format('[%s]::requestmeta-searchbytag', uuid());
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/get #', logkey, {request: req.params});
@@ -364,7 +364,7 @@ server.del('/DVP/API/:version/ARDS/requestmeta/:serverType/:requestType',authori
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('ReqMETA:%s:%s:%s:%s', company, tenant, data["serverType"], data["requestType"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- requestmeta/remove #', logkey, {request: req.params});
@@ -398,7 +398,7 @@ server.post('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresou
         req.body.UserName = req.user.iss;
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/add #', logkey, {request: req.body});
@@ -437,7 +437,7 @@ server.put('/DVP/API/:version/ARDS/resource',authorization({resource:"ardsresour
         var tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Resource:%d:%d:%s', company, tenant, req.body.ResourceId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/set #', logkey, {request: req.body});
@@ -477,7 +477,7 @@ server.put('/DVP/API/:version/ARDS/resource/share',authorization({resource:"ards
         req.body.UserName = req.user.iss;
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.ResourceId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/share #', logkey, {request: req.body});
@@ -516,7 +516,7 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid/removesSharing/:handling
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/removesSharing #', logkey, {request: req.params});
@@ -547,7 +547,7 @@ server.get('/DVP/API/:version/ARDS/resource/:class/:type/:category',authorizatio
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
-        var logkey = util.format('[%s::resource-searchbytag]', uuid.v1());
+        var logkey = util.format('[%s::resource-searchbytag]', uuid());
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/searchbytag #', logkey);
@@ -582,7 +582,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/get #', logkey, {request: req.params});
@@ -615,7 +615,7 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Resource:%s:%s:%s', company, tenant, data["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/remove #', logkey, {request: req.params});
@@ -648,7 +648,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/cs/update #', logkey, {request: req.body});
@@ -733,7 +733,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot/session/
             
 
             var objkey = util.format('%d:%d:Session::%s:res::%s', req.body.Company, req.body.Tenant, req.params["sessionid"], req.params["resourceid"]);
-            var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+            var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
             infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
             infoLogger.ReqResLogger.log('info', '%s Start- resource/cs/updatebysessionid #', logkey, {request: req.body, query: req.query});
@@ -767,7 +767,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
         var Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Resource:%d:%d:%s', Company, Tenant, req.params["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, {request: req.params});
@@ -806,7 +806,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
  req.body.Tenant = parseInt(tenant);
 
  var objkey = util.format('Resource:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["resourceid"]);
- var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+ var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
  infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
  infoLogger.ReqResLogger.log('info', '%s Start- resource/state/push #', logkey, {request: req.params});
@@ -842,7 +842,7 @@ server.get('/DVP/API/:version/ARDS/resource/:resourceid/state',authorization({re
         var company = req.user.company;
         var tenant = req.user.tenant;
         var objkey = util.format('Resource:%d:%d:%s', company, tenant, req.params["resourceid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- resource/state/get #', logkey, {request: req.params});
@@ -876,7 +876,7 @@ server.post('/DVP/API/:version/ARDS/request',authorization({resource:"ardsreques
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/add #', logkey, {request: req.body});
@@ -915,7 +915,7 @@ server.put('/DVP/API/:version/ARDS/request',authorization({resource:"ardsrequest
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/set #', logkey, {request: req.body});
@@ -952,7 +952,7 @@ server.get('/DVP/API/:version/ARDS/request/:serverType/:requestType',authorizati
     try {
         var company = req.user.company;
         var tenant = req.user.tenant;
-        var logkey = util.format('[%s::request-searchbytag]', uuid.v1());
+        var logkey = util.format('[%s::request-searchbytag]', uuid());
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/searchbytag #', logkey, {request: req.body});
@@ -986,7 +986,7 @@ server.get('/DVP/API/:version/ARDS/request/:sessionid',authorization({resource:"
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/get #', logkey, {request: req.params});
@@ -1018,7 +1018,7 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/:reason',authorization({re
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/remove #', logkey, {request: req.params});
@@ -1051,7 +1051,7 @@ server.del('/DVP/API/:version/ARDS/request/:sessionid/reject/:reason',authorizat
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/reject #', logkey, {request: req.params});
@@ -1084,7 +1084,7 @@ server.put('/DVP/API/:version/ARDS/request/:sessionid/state/:state',authorizatio
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.params["sessionid"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/state/update/na #', logkey, {request: req.params});
@@ -1185,7 +1185,7 @@ server.post('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", acti
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         reqQueueHandler.AddRequestToQueue(logkey, req.body, function (err, result) {
             if (err) {
@@ -1215,7 +1215,7 @@ server.put('/DVP/API/:version/ARDS/queue',authorization({resource:"queue", actio
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('Request:%d:%d:%s', req.body.Company, req.body.Tenant, req.body.SessionId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         reqQueueHandler.ReAddRequestToQueue(logkey, req.body, function (err, result) {
             if (err) {
@@ -1245,7 +1245,7 @@ server.put('/DVP/API/:version/ARDS/queue/setNextProcessingItem',authorization({r
         req.body.Tenant = parseInt(req.user.tenant);
 
         var objkey = util.format('QueueId:%s', req.body.QueueId);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         infoLogger.ReqResLogger.log('info', '%s --------------------------------------------------', logkey);
         infoLogger.ReqResLogger.log('info', '%s Start- request/remove #', logkey, {request: req.body});
@@ -1278,7 +1278,7 @@ server.del('/DVP/API/:version/ARDS/queue/:queueId/:sessionId/:requestType/:reaso
         var tenant = req.user.tenant;
         var data = req.params;
         var objkey = util.format('Request:%s:%s:%s', company, tenant, data["sessionId"]);
-        var logkey = util.format('[%s]::[%s]', uuid.v1(), objkey);
+        var logkey = util.format('[%s]::[%s]', uuid(), objkey);
 
         reqQueueHandler.RemoveRequestFromQueue(logkey, company, tenant, data["queueId"], data["sessionId"], data["requestType"], data["reason"], function (err, result) {
             if (err) {
@@ -1303,7 +1303,7 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
     var jsonString;
     try {
 
-        /*scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName,uuid.v1());*/
+        /*scheduleWorkerHandler.SendNotification(req.user.company,req.user.tenant,req.params.UserName,uuid());*/
 
         console.log("SendNotificationToRoom - Callback" + JSON.stringify(req.body));
         var notificationMsg = {
@@ -1317,7 +1317,7 @@ server.post('/DVP/API/:version/ARDS/Notification/:UserName',authorization({resou
         };
 
         var postData = {message: notificationMsg, From: 'ArdsliteService'};
-        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, postData,uuid.v1());
+        notificationService.SendNotificationToRoom(req.user.company,req.user.tenant,req.body.RoomName,req.body.Event, postData,uuid());
 
         jsonString = messageFormatter.FormatMessage(undefined, "Execute Successfully", true, undefined);
         res.end(jsonString);
