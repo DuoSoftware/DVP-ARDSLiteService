@@ -1249,7 +1249,7 @@ server.put('/DVP/API/:version/ARDS/queue/setNextProcessingItem',authorization({r
         logger.info('%s Start- request/remove #', logkey, {request: req.body});
 
         if(req.body.QueueId && req.body.ProcessingHashId && req.body.CurrentSession) {
-            reqQueueHandler.SetNextProcessingItem(logkey, req.body.QueueId, req.body.ProcessingHashId, req.body.CurrentSession, function (result) {
+            reqQueueHandler.SetNextProcessingItem(logkey, req.body.QueueId, req.body.ProcessingHashId, req.body.CurrentSession, function (err, result) {
                 jsonString = messageFormatter.FormatMessage(undefined, "Execute SetNextProcessingItem Success", true, undefined);
                 logger.info('%s End- queue/SetNextProcessingItem :: Result: %s #', logkey, result, {request: req.body});
                 res.end(jsonString);

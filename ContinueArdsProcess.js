@@ -144,7 +144,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     //var redLokKey = util.format('lock:%s:%s', pHashId, request.QueueId);
 
                     //redisHandler.RLock.lock(redLokKey, 500).then(function(lock) {
-                        reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
+                        reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (err, result) {
 
                             // lock.unlock()
                             //     .catch(function (err) {
