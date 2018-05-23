@@ -9,7 +9,6 @@ var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var continueArdsHandler = require('./ContinueArdsProcess.js');
 var infoLogger = require('dvp-ardscommon/InformationLogger.js');
 var resStateMapper = require('dvp-ardscommon/ResourceStateMapper.js');
-var authHandler = require('dvp-ardscommon/Authorization.js');
 var notificationService = require('dvp-ardscommon/services/notificationService.js');
 var uuid = require('uuid/v4');
 var startArds = require('./StartArds.js');
