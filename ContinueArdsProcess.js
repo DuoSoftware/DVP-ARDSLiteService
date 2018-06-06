@@ -3,33 +3,33 @@ var util = require('util');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
-var infoLogger = require('dvp-ardscommon/InformationLogger.js');
+var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
 var uuid = require('uuid/v4');
 var redisHandler = require('dvp-ardscommon/RedisHandler');
 
 var ContinueArds = function (request, callback) {
     var logkey = util.format('[%s]::[%s]', uuid(), request.SessionId);
-    infoLogger.ContArdsLogger.log('info', '%s ************************* Start ContinueArds *************************', logkey);
+    logger.info('%s ************************* Start ContinueArds *************************', logkey);
 
     var selectionResult = "";
     var handlingResource = "";
     
     if (request && request.ReqHandlingAlgo && request.ReqHandlingAlgo == "QUEUE") {
-        console.log("Continue Queued Rqquest : " +request.SessionId+" :: hResource : "+ request.HandlingResource);
+        logger.info("Continue Queued Rqquest : " +request.SessionId+" :: hResource : "+ request.HandlingResource);
         handlingResource = request.HandlingResource;
         requestHandler.GetRequest(logkey, request.Company, request.Tenant, request.SessionId, function(err, result){
             if(err){
-                console.log(err);
+                logger.error(err);
                 callback(err, undefined);
             }else {
                 if(result){
-                    console.log("Request On Continue :: " + result);
+                    logger.info("Request On Continue :: " + result);
                     var jResult = JSON.parse(result);
                     DoReplyServing(logkey, jResult, handlingResource, function (reply) {
                         callback(undefined, reply);
                     });
                 }else{
-                    console.log("Request On Continue :: No Request Found :: " + result);
+                    logger.info("Request On Continue :: No Request Found :: " + result);
                     callback(new Error("No Request Found"), undefined);
                 }
             }
@@ -48,7 +48,7 @@ var ContinueArds = function (request, callback) {
 };
 
 var DoReplyServing = function (logkey, request, handlingResource, callback) {
-    infoLogger.ContArdsLogger.log('info', '%s ContinueArds. SessionId: %s :: SessionId: %s :: handlingResource: %s :: ServingAlgo: %s', logkey, request.SessionId, handlingResource, request.ServingAlgo);
+    logger.info('%s ContinueArds. SessionId: %s :: SessionId: %s :: handlingResource: %s :: ServingAlgo: %s', logkey, request.SessionId, handlingResource, request.ServingAlgo);
 
     function startRoute() {
         //var reqSkills = [];
@@ -92,7 +92,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     ResourceInfo: resInfoData
                 };
             } catch (ex) {
-                console.log(ex);
+                logger.error(ex);
             }
         }
 
@@ -101,30 +101,30 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 if (msg == "readdRequired") {
                     requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Server Return 503.", function (err, result) {
                         if (err) {
-                            console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                            logger.error("Readd Request to queue failed. SessionId:: " + request.SessionId);
                         }
                         else if ("true") {
-                            console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
+                            logger.info("Readd Request to queue success. SessionId:: " + request.SessionId);
                         }
                         else {
-                            console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                            logger.info("Readd Request to queue failed. SessionId:: " + request.SessionId);
                         }
                     });
                 }
-                console.log("SendCallBack success. SessionId:: " + request.SessionId);
-                console.log("CallbackFinishedTime: " + new Date().toISOString());
+                logger.info("SendCallBack success. SessionId:: " + request.SessionId);
+                logger.info("CallbackFinishedTime: " + new Date().toISOString());
             }
             else {
-                console.log("SendCallBack failed. SessionId:: " + request.SessionId);
+                logger.info("SendCallBack failed. SessionId:: " + request.SessionId);
                 requestHandler.RejectRequest(logkey, request.Company, request.Tenant, request.SessionId, "Send Callback failed.", function (err, result) {
                     if (err) {
-                        console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                        logger.error("Readd Request to queue failed. SessionId:: " + request.SessionId);
                     }
                     else if ("true") {
-                        console.log("Readd Request to queue success. SessionId:: " + request.SessionId);
+                        logger.info("Readd Request to queue success. SessionId:: " + request.SessionId);
                     }
                     else {
-                        console.log("Readd Request to queue failed. SessionId:: " + request.SessionId);
+                        logger.info("Readd Request to queue failed. SessionId:: " + request.SessionId);
                     }
                 });
             }
@@ -136,7 +136,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
         case "CALLBACK":
             if (handlingResource && handlingResource != "" && handlingResource != "No matching resources at the moment") {
                 var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
-                console.log(result);
+                logger.info(result);
 
 
                 if (request.ReqHandlingAlgo == "QUEUE") {
@@ -144,7 +144,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                     //var redLokKey = util.format('lock:%s:%s', pHashId, request.QueueId);
 
                     //redisHandler.RLock.lock(redLokKey, 500).then(function(lock) {
-                        reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (result) {
+                        reqQueueHandler.SetNextProcessingItem(logkey, request.QueueId, pHashId, request.SessionId, function (err, result) {
 
                             // lock.unlock()
                             //     .catch(function (err) {
@@ -153,10 +153,10 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
 
                             requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.error(err);
                                 }
                                 startRoute();
-                                console.log("=======================DoReplyServing Done=================================");
+                                logger.info("=======================DoReplyServing Done=================================");
                                 callback(handlingResource);
                             });
 
@@ -169,10 +169,10 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                 } else {
                     requestHandler.SetRequestState(logkey, request.Company, request.Tenant, request.SessionId, "TRYING", function (err, result) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                         }
                         startRoute();
-                        console.log("=======================DoReplyServing Done=================================");
+                        logger.info("=======================DoReplyServing Done=================================");
                         callback(handlingResource);
                     });
                 }
@@ -185,7 +185,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
 
         default:
             var result = util.format('SessionId:: %s ::: HandlingResource:: %s', request.SessionId, handlingResource);
-            console.log(result);
+            logger.info(result);
 
             //var reqSkills = [];
             //for (var i = request.AttributeInfo.length - 1; i >= 0; i--) {
@@ -231,7 +231,7 @@ var DoReplyServing = function (logkey, request, handlingResource, callback) {
                             ResourceInfo: resInfoData
                         };
                     } catch (ex) {
-                        console.log(ex);
+                        logger.error(ex);
                     }
                 }
 
