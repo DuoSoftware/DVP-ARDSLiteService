@@ -146,7 +146,7 @@
 
 var request = require('./StartArds');
 var async = require('async');
-var uuid = require('node-uuid');
+var uuid = require('uuid/v4');
 
 var requestAdd = function () {
 
@@ -154,7 +154,7 @@ var requestAdd = function () {
 
         var requestArray = [
             function (callback) {
-                var session = uuid.v1();
+                var session = uuid();
 
                 var preRequest = {
                     Tenant: 1,
@@ -174,7 +174,7 @@ var requestAdd = function () {
                 });
             },
             function (callback) {
-                var session = uuid.v1();
+                var session = uuid();
 
                 var preRequest = {
                     Tenant: 1,
@@ -194,7 +194,7 @@ var requestAdd = function () {
                 });
             },
             function (callback) {
-                var session = uuid.v1();
+                var session = uuid();
 
                 var preRequest = {
                     Tenant: 1,

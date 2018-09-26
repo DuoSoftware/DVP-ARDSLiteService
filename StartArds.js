@@ -4,18 +4,18 @@ var sortArray = require('dvp-ardscommon/CommonMethods.js');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var preProcessHandler = require('dvp-ardscommon/PreProcessor.js');
 var contArdsHandler = require('./ContinueArdsProcess.js');
-var infoLogger = require('dvp-ardscommon/InformationLogger.js');
+var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
 var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 
 var AddRequest = function (logKey, reqPreObj, callback) {
     try {
         preProcessHandler.execute(logKey, reqPreObj, function (err, requestObj) {
             if (err) {
-                console.log(err);
+                logger.error(err);
                 callback(err, null, 0);
             }
             else {
-                infoLogger.DetailLogger.log('info', '%s ************************* Start AddRequest *************************', logKey);
+                logger.info('%s ************************* Start AddRequest *************************', logKey);
 
                 var key = util.format('Request:%d:%d:%s', requestObj.Company, requestObj.Tenant, requestObj.SessionId);
                 var tag = ["company_" + requestObj.Company, "tenant_" + requestObj.Tenant, "class_" + requestObj.Class, "type_" + requestObj.Type, "category_" + requestObj.Category, "sessionid_" + requestObj.SessionId, "reqserverid_" + requestObj.RequestServerId, "priority_" + requestObj.Priority, "servingalgo_" + requestObj.ServingAlgo, "handlingalgo_" + requestObj.HandlingAlgo, "selectionalgo_" + requestObj.SelectionAlgo, "objtype_Request"];
@@ -35,7 +35,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                 var jsonObj = JSON.stringify(requestObj);
                 redisHandler.AddObj_V_T(logKey, key, jsonObj, tag, function (err, reply, vid) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         callback(err, null, 0);
                     }
                     else {
@@ -45,12 +45,12 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                                 var replyObj = {};
                                 reqQueueHandler.AddRequestToQueue(logKey, requestObj, function (err, result, qPosition) {
                                     if (err) {
-                                        console.log(err);
+                                        logger.error(err);
                                         replyObj = {Position: qPosition, QueueName: requestObj.QueueName, Message: "Add Request to Queue Failed. sessionId :: " + requestObj.SessionId};
                                         callback(err, replyObj, vid);
                                     }
                                     else {
-                                        console.log("Request added to queue. sessionId :: " + requestObj.SessionId);
+                                        logger.info("Request added to queue. sessionId :: " + requestObj.SessionId);
                                         replyObj = {Position: qPosition, QueueName: requestObj.QueueName, Message: "Request added to queue. sessionId :: " + requestObj.SessionId};
                                         callback(err, replyObj, vid);
                                     }
@@ -59,7 +59,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
                             case "DIRECT":
                                 requestHandler.SetRequestState(logKey, requestObj.Company, requestObj.Tenant, requestObj.SessionId, "N/A", function (err, result) {
                                     if (err) {
-                                        console.log(err);
+                                        logger.error(err);
                                     }
                                     contArdsHandler.ContinueArds(requestObj, function (err, handlingResource) {
                                         callback(err, handlingResource, vid);
@@ -76,7 +76,7 @@ var AddRequest = function (logKey, reqPreObj, callback) {
             }
         });
     }catch (ex2) {
-        console.log(ex2);
+        logger.error(ex2);
         callback(ex2, null, 0);
     }
 };
