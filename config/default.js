@@ -19,7 +19,7 @@
         "routingServiceHost": "127.0.0.1",
         "routingServicePort": "2223",
         "routingServiceVersion": "1.0.0.0",
-        "resourceServiceHost": "localhost:8832",
+        "resourceServiceHost": "resourceservice.app1.veery.cloud",
         "resourceServicePort": "8832",
         "resourceServiceVersion": "1.0.0.0",
         "notificationServiceHost": "notificationservice.app.veery.cloud",
@@ -27,7 +27,9 @@
         "notificationServiceVersion": "1.0.0.0",
         "ardsMonitoringServiceHost": "ardsmonitoring.app.veery.cloud",//ardsmonitoring.app.veery.cloud
         "ardsMonitoringServicePort": "2225",
-        "userService": "http://localhost:3638/DVP/API/1.0.0.0/",
+        "userServiceHost": "userservice.app1.veery.cloud",
+        "userServicePort": "8832",
+        "userServiceVersion": "1.0.0.0",
         "ardsMonitoringServiceVersion": "1.0.0.0",
         "cronurl": "scheduleworker.app.veery.cloud",//ardsmonitoring.app.veery.cloud
         "cronport": "2225",
