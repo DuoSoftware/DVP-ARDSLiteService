@@ -641,6 +641,9 @@ server.del('/DVP/API/:version/ARDS/resource/:resourceid',authorization({resource
 });
 
 server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authorization({resource:"ardsresource", action:"write"}), function (req, res, next) {
+
+
+    logger.info('Update Concurrent info - ', req.body);
     var jsonString;
     try {
         req.body.Company = parseInt(req.user.company);
@@ -670,7 +673,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/concurrencyslot',authori
                 break;
 
             case "Reserved":
-                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.MaxFreezeTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
+                resourceHandler.UpdateSlotStateReserved(logkey, req.body.Company, req.body.Tenant, req.body.BusinessUnit, req.body.HandlingType, req.body.ResourceId, req.body.SlotId, req.body.SessionId, req.body.MaxReservedTime, req.body.MaxAfterWorkTime, req.body.MaxFreezeTime, req.body.TempMaxRejectCount, req.body.OtherInfo, function (err, result) {
                     if (err != null) {
                         logger.error('%s End- resource/cs/update :: Error: %s #', logkey, err, {request: req.body});
 
@@ -770,7 +773,7 @@ server.put('/DVP/API/:version/ARDS/resource/:resourceid/state/:state/reason/:rea
 
         logger.info('%s --------------------------------------------------', logkey);
         logger.info('%s Start- resource/state/push #', logkey, {request: req.params});
-        resStateMapper.SetResourceState(logkey, Company, Tenant, req.params["resourceid"], req.user.iss, req.params["state"], req.params["reason"], function (err, result) {
+        resStateMapper.SetResourceState(logkey, Company, Tenant,undefined, req.params["resourceid"], req.user.iss, req.params["state"], req.params["reason"], function (err, result) {
             if (err != null) {
                 logger.error('%s End- resource/state/push :: Error: %s #', logkey, err, {request: req.body});
 
