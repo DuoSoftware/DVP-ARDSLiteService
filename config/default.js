@@ -2,7 +2,7 @@
     "Redis":
         {
             "mode":"instance",//instance, cluster, sentinel
-            "ip": "138.197.90.92",
+            "ip": "45.55.142.207",
             "port": 6389,
             "user": "duo",
             "password": "DuoS123",
