@@ -30,7 +30,10 @@
         "ardsMonitoringServiceVersion": "1.0.0.0",
         "cronurl": "scheduleworker.app.veery.cloud",//ardsmonitoring.app.veery.cloud
         "cronport": "2225",
-        "cronversion": "1.0.0.0"
+        "cronversion": "1.0.0.0",
+        "userServiceHost": "userservice.app1.veery.cloud",
+        "userServicePort": "8832",
+        "userServiceVersion": "1.0.0.0",
     },
     "Host": {
         "LBIP":"127.0.0.1",
@@ -52,7 +55,7 @@
     "Security":
         {
 
-            "ip" : "45.55.142.207",
+            "ip" : "138.197.90.92",
             "port": 6389,
             "user": "duo",
             "password": "DuoS123",
