@@ -8,6 +8,7 @@
     "config": "^1.19.0",
     "dvp-ardscommon": "3.2.6",
     "dvp-common": "1.1.0",
+    "dvp-healthcheck": "^1.0.3",
     "lodash": "^4.2.1",
     "request": "^2.79.0",
     "restify": "^4.1.1",

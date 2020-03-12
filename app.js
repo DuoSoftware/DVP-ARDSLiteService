@@ -17,6 +17,7 @@ var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJ
 var jwt = require('restify-jwt');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
+var healthcheck = require("dvp-healthcheck/DBHealthChecker");
 
 process.on("uncaughtException", function(err) {
   console.error(err);
@@ -46,6 +47,11 @@ server.use(jwt({secret: secret.Secret}));
 var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
+
+var hc = new healthcheck(server, {
+  redis: redisHandler.RedisCon
+});
+hc.Initiate();
 
 
 server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
