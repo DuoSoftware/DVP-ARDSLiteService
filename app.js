@@ -49,7 +49,7 @@ var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
 
 var hc = new healthcheck(server, {
-  redis: redisHandler.RedisCon
+  redis: redisHandler.client
 });
 hc.Initiate();
 
