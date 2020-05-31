@@ -4,7 +4,7 @@ var sortArray = require('dvp-ardscommon/CommonMethods.js');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var preProcessHandler = require('dvp-ardscommon/PreProcessor.js');
 var contArdsHandler = require('./ContinueArdsProcess.js');
-var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var logger = require("dvp-common-lite/LogHandler/CommonLogHandler.js").logger;
 var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 
 var AddRequest = function (logKey, reqPreObj, callback) {
