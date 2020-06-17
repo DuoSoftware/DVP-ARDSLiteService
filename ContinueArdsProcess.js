@@ -3,7 +3,7 @@ var util = require('util');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var requestHandler = require('dvp-ardscommon/RequestHandler.js');
 var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
-var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var logger = require("dvp-common-lite/LogHandler/CommonLogHandler.js").logger;
 var uuid = require('uuid/v4');
 var redisHandler = require('dvp-ardscommon/RedisHandler');
 

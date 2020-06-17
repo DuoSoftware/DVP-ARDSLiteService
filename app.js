@@ -7,17 +7,29 @@ var reqServerHandler = require('dvp-ardscommon/ReqServerHandler.js');
 var reqMetaHandler = require('dvp-ardscommon/ReqMetaDataHandler.js');
 var reqQueueHandler = require('dvp-ardscommon/ReqQueueHandler.js');
 var continueArdsHandler = require('./ContinueArdsProcess.js');
-var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var logger = require("dvp-common-lite/LogHandler/CommonLogHandler.js").logger;
 var resStateMapper = require('dvp-ardscommon/ResourceStateMapper.js');
 var notificationService = require('dvp-ardscommon/services/notificationService.js');
 var uuid = require('uuid/v4');
 var startArds = require('./StartArds.js');
 var config = require('config');
-var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var messageFormatter = require('dvp-common-lite/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var jwt = require('restify-jwt');
-var secret = require('dvp-common/Authentication/Secret.js');
-var authorization = require('dvp-common/Authentication/Authorization.js');
+var secret = require('dvp-common-lite/Authentication/Secret.js');
+var authorization = require('dvp-common-lite/Authentication/Authorization.js');
+var healthcheck = require("dvp-healthcheck/DBHealthChecker");
 
+process.on("uncaughtException", function(err) {
+  console.error(err);
+  console.log("[Unhandled Exception] Node Exiting...");
+  process.exit(1);
+});
+
+process.on("unhandledRejection", err => {
+  console.error(err);
+  console.log("[Unhandled Rejection] Node Exiting...");
+  process.exit(1);
+});
 
 var server = restify.createServer({
     name: 'ArdsServer',
@@ -30,11 +42,16 @@ server.use(restify.fullResponse());
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
-server.use(jwt({secret: secret.Secret}));
+server.use(jwt({secret: secret.Secret}).unless({path: ['/healthcheck']}));
 
 var hostIp = config.Host.Ip;
 var hostPort = config.Host.Port;
 var hostVersion = config.Host.Version;
+
+var hc = new healthcheck(server, {
+  redis: redisHandler.RedisCon
+});
+hc.Initiate();
 
 
 server.post('/DVP/API/:version/ARDS/requestserver',authorization({resource:"requestserver", action:"write"}), function (req, res, next) {
