@@ -6,7 +6,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "config": "^1.19.0",
-    "dvp-ardscommon": "^3.3.0",
+    "dvp-ardscommon": "^4.0.0",
     "dvp-common": "1.1.0",
     "dvp-common-lite": "1.1.0",
     "dvp-healthcheck": "^1.0.6",
