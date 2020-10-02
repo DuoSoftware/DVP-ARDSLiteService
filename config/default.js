@@ -33,7 +33,7 @@
     userServiceHost: "userservice.app1.veery.cloud",
     userServicePort: "8832",
     userServiceVersion: "1.0.0.0",
-    dynamicPort: true,
+    dynamicPort: false,
   },
   Host: {
     LBIP: "127.0.0.1",
