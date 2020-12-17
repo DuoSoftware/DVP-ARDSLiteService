@@ -37,7 +37,10 @@
 		"Port": "HOST_ARDSLITESERVICE_PORT",
 		"Version": "HOST_VERSION",
 		"UseMsgQueue": "HOST_USE_MSG_QUEUE",
-        "UseDashboardMsgQueue": 'HOST_USE_DASHBOARD_MSG_QUEUE'
+        "UseDashboardMsgQueue": 'HOST_USE_DASHBOARD_MSG_QUEUE',
+		"emailQueueName":"SYS_EMAIL_QUEUE_NAME",
+		"smsQueueName": "SYS_SMS_QUEUE_NAME",
+		"defaultMailHost": "SYS_DEFAULT_MAIL_HOST"
 	},
 	"DB": {
 	    "Type": "SYS_DATABASE_TYPE",
@@ -69,5 +72,15 @@
 		"user": "SYS_RABBITMQ_USER",
 		"password": "SYS_RABBITMQ_PASSWORD",
 		"vhost":"SYS_RABBITMQ_VHOST"
-	}
+	},
+
+	"Mongo": {
+		"ip": "SYS_MONGO_HOST",
+		"port": "SYS_MONGO_PORT",
+		"dbname": "SYS_MONGO_DB",
+		"password": "SYS_MONGO_PASSWORD",
+		"user": "SYS_MONGO_USER",
+		"type": "SYS_MONGO_TYPE"
+
+	},
 };
