@@ -6,6 +6,7 @@
 		"port": "SYS_REDIS_PORT",
 		"user": "SYS_REDIS_USER",
 		"password": "SYS_REDIS_PASSWORD",
+		"db": "SYS_REDIS_DB_CONFIG",
 		"sentinels":{
 			"hosts": "SYS_REDIS_SENTINEL_HOSTS",
 			"port":"SYS_REDIS_SENTINEL_PORT",
@@ -29,7 +30,10 @@
 		"ardsMonitoringServiceVersion": "SYS_ARDSMONITORING_VERSION",
 		"cronurl": "SYS_SCHEDULEWORKER_HOST",//ardsmonitoring.app.veery.cloud
 		"cronport": "SYS_SCHEDULEWORKER_PORT",
-		"cronversion": "SYS_SCHEDULEWORKER_VERSION"
+		"cronversion": "SYS_SCHEDULEWORKER_VERSION",
+		"UserServiceHost": "SYS_USERSERVICE_HOST",
+    	"UserServicePort": "SYS_USERSERVICE_PORT",
+    	"UserServiceVersion": "SYS_USERSERVICE_VERSION"
 	},
 	"Host": {
 		"LBIP":"LB_FRONTEND",
